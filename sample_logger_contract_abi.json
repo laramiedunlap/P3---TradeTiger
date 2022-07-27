@@ -1,0 +1,131 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "inputTraderAddress",
+				"type": "address"
+			},
+			{
+				"name": "inputOpen",
+				"type": "bool"
+			},
+			{
+				"name": "inputSymbol",
+				"type": "string"
+			},
+			{
+				"name": "inputSize",
+				"type": "int256"
+			},
+			{
+				"name": "inputFractional_shares",
+				"type": "int256"
+			},
+			{
+				"name": "inputEntryPrice",
+				"type": "uint256"
+			},
+			{
+				"name": "inputExitPrice",
+				"type": "uint256"
+			},
+			{
+				"name": "inputExpirationTimeStamp",
+				"type": "uint256"
+			},
+			{
+				"name": "inputStrike",
+				"type": "uint256"
+			},
+			{
+				"name": "inputIsCall",
+				"type": "bool"
+			}
+		],
+		"name": "add_trade",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "clear_log",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "log",
+		"outputs": [
+			{
+				"name": "Nonce",
+				"type": "uint256"
+			},
+			{
+				"name": "traderAddress",
+				"type": "address"
+			},
+			{
+				"name": "open",
+				"type": "bool"
+			},
+			{
+				"name": "symbol",
+				"type": "string"
+			},
+			{
+				"name": "size",
+				"type": "int256"
+			},
+			{
+				"name": "fractional_shares",
+				"type": "int256"
+			},
+			{
+				"name": "entryPrice",
+				"type": "uint256"
+			},
+			{
+				"name": "exitPrice",
+				"type": "uint256"
+			},
+			{
+				"name": "expirationTimeStamp",
+				"type": "uint256"
+			},
+			{
+				"name": "strike",
+				"type": "uint256"
+			},
+			{
+				"name": "isCall",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"name": "newTrader",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	}
+]
