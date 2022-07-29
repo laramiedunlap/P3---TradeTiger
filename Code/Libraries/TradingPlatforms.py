@@ -2,7 +2,7 @@
     # This can/should be its own .py file
 trade_platforms = {
     "simulation": "Simulation",
-    "alpaca" : "Alapaca",
+    "alpaca" : "Alpaca",
     "tda": "TD Ameritrade"
 }
 
@@ -15,12 +15,27 @@ class tradingPlatform :
     platform = None
     def __hello__(self):
         return f"This is a {self.platform} trading platform."
-    def openTrade(self):
+    def openTrade(self,TraderAddress,Open,Symbol,Size,Fractional_shares,EntryPrice,ExpirationTimeStamp,Strike,IsCall):
         # To create/send transaction to Contract
-        pass
-    def closeTrade(self):
+        return self.contract.functions.add_trade(
+            TraderAddress,
+            Open,
+            Symbol,
+            Size,
+            Fractional_shares,
+            EntryPrice,
+            # ExitPrice,
+            ExpirationTimeStamp,
+            Strike,
+            IsCall
+            ).transact({'from': TraderAddress, 'gas': 1000000})
+    def closeTrade(self,TraderAddress,tradeID, ExitPrice):
         # To create/send transaction to Contract
-        pass
+        return self.contract.functions.close_trade(
+            TraderAddress,
+            tradeID,
+            ExitPrice,
+            ).transact({'from': TraderAddress, 'gas': 1000000})
 def init_TradingPlatform(platform, contract):
     if platform == trade_platforms["simulation"]:
         return simulation_TradingPlatform(contract)

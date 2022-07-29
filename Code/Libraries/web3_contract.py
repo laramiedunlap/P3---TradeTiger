@@ -8,7 +8,7 @@ load_dotenv()
 
 w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
 
-def load_contract(abi_path):
+def load_web3(abi_path):
 
     with open(Path(abi_path)) as f:
         logger_abi = json.load(f)
@@ -20,4 +20,4 @@ def load_contract(abi_path):
         abi=logger_abi
     )
 
-    return contract
+    return contract,contract_address,w3
