@@ -81,9 +81,5 @@ else:
                st.write(dict(receipt))
           st.markdown("---")
 
-# inputOpen = st.radio(
-#      "Open or Close a Trade",
-#      ('1','0'))
-
 
 
