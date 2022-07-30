@@ -2,6 +2,7 @@ pragma solidity 0.5.0;
 
 contract logger {
     address payable trader;
+    uint256 traderID;
     address payable server;
     uint256 number_of_trades;
     uint256 subscriptionCost_inWei;
@@ -10,9 +11,11 @@ contract logger {
 
     constructor(
         address payable newTrader,
-        address payable _server
+        address payable _server,
+        uint256 _traderID
     ) public { //Should check ERC20Detailed to be sure I am including all the security
         trader = newTrader;
+        traderID = _traderID;
         server = _server;
         number_of_trades = 0;
         number_of_subscribers = 0;
@@ -117,8 +120,8 @@ contract logger {
     function checkSubscriptionNumbers () public view returns(uint256) {
         return (number_of_subscribers);
     }
-    function addSubscriber() payable public {
-        require(msg.value >= subscriptionCost_inWei,"Subscriptions cost more.");
+    function addSubscriber() public {
+        //Transfer subscription amount to Logger
         subscribers[number_of_subscribers];
         number_of_subscribers++;
     }
@@ -131,12 +134,31 @@ contract logger {
 }
 
 contract deployer {
-    address public log_address;
-
+    address public deployer_address;
+    address payable server;
+    address payable newestTrader;
+    uint TraderID ;
 
     constructor(
-        address payable trader
     ) public {
-        logger log = new logger(trader, msg.sender);
+        server = msg.sender ;
+        deployer_address = address(this);
+        TraderID = 0 ; 
+    }
+
+    event logCreated(uint TraderID, address newLogAddress);
+    
+    function createLog () public returns(address){
+        newestTrader = msg.sender;
+        TraderID ++ ;
+        logger log = new logger(newestTrader, server, TraderID);
+
+
+        emit logCreated(TraderID, address(log));
+
+
+        return address(log);
+
+
     }
 }
