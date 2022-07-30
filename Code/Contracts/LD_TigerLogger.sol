@@ -1,12 +1,9 @@
 pragma solidity 0.5.0;
-
 contract logger {
     address payable trader;
     address payable server;
     uint256 TraderId;
     uint tradeNum;
-
-
     constructor(
         address payable newTrader,
         address payable _server,
@@ -17,154 +14,128 @@ contract logger {
         TraderId = _TraderId;
         tradeNum = 0;
     }
-
-    struct Gradable_Trade {
+    struct gradableTrade {
         uint tradeNum ;
         address payable traderAddress ;
         bool open ; //open == True, closed == False
         string symbol ;
-        int size ; // use negative for short position 
-        int fractional_shares ;
-        uint entryPrice ;
-        uint exitPrice ;
-        uint expirationTimeStamp ;
-        uint strike ;
-        bool isCall ;
-
+        string size ; // use negative for short position
+        string entry ; // price, time
+        string exit ; // price, time
+        //options data //"30-7-2022, 27.20, 1"
+        string optionData ; //expirationTimeStamp, strike, isCall
+        //Server Functions
+        bool Verified ;
     }
-
-    
-    Gradable_Trade blankTrade = Gradable_Trade(
-        115792089237316195423570985008687907853269984665640564039457584007913129639935, //Nonce (solidity true max int)
-        address(0), // traderAddress
-        false, // open
-        "0", // symbol
-        0, // size
-        0, // fractional_shares
-        0, // entryPrice
-        0, // exitPrice
-        0, // expirationTimeStamp
-        0, // strike
-        false // isCall
-    );
-    
+    // gradableTrade blankTrade = gradableTrade(
+    //     115792089237316195423570985008687907853269984665640564039457584007913129639935, //Nonce (solidity true max int)
+    //     address(0), // traderAddress
+    //     false, // open
+    //     "", // symbol
+    //     "", // size
+    //     "", // entryPrice
+    //     "", // entryTime
+    //     "", // exitPrice
+    //     "", //exitTime
+    //     "", // expirationTimeStamp
+    //     "", // strike
+    //     false, // isCall
+    //     false //Verified
+    // );
     modifier onlyTrader {
         require(msg.sender == trader, "You are not the trader associated with this log!");
         _;
     }
-    
     modifier onlyServer {
         require(msg.sender == server, "You are not the server");
-        //Best way to make it so ONLY the server can do this?
-        
         _;
     }
-
-
-    mapping(uint256 => Gradable_Trade) public log;
+    mapping(uint256 => gradableTrade) public log;
     //might want to do this as well for a permenant record
     // event Logging(uint256 logNum, trade newTrade);
-
     event newTrade (
         uint TraderId,
         address payable inputTraderAddress,
-        uint tradeNum, 
+        uint tradeNum,
         bool inputOpen,
         string inputSymbol,
-        int inputSize,
-        int inputFractional_shares,
-        uint inputEntryPrice,
-        uint inputExitPrice,
-        uint inputExpirationTimeStamp,
-        uint inputStrike,
-        bool inputIsCall); 
-
-    function add_trade (
+        string inputSize,
+        string inputEntry,
+        string inputOptionsData);
+    function openTrade (
         address payable inputTraderAddress,
         bool inputOpen,
         string memory inputSymbol,
-        int inputSize,
-        int inputFractional_shares,
-        uint inputEntryPrice,
-        uint inputExitPrice,
-        uint inputExpirationTimeStamp,
-        uint inputStrike,
-        bool inputIsCall
+        string memory inputSize,
+        string memory inputEntry,
+        string memory inputOptionsData
         ) public onlyTrader {
-        log[tradeNum] = Gradable_Trade(
+        log[tradeNum] = gradableTrade(
             tradeNum,
             inputTraderAddress,
             inputOpen,
             inputSymbol,
             inputSize,
-            inputFractional_shares,
-            inputEntryPrice,
-            inputExitPrice,
-            inputExpirationTimeStamp,
-            inputStrike,
-            inputIsCall
+            inputEntry,
+            "",
+            inputOptionsData,
+            false
         );
         emit newTrade(
         TraderId,
         inputTraderAddress,
-        tradeNum, 
+        tradeNum,
         inputOpen,
         inputSymbol,
         inputSize,
-        inputFractional_shares,
-        inputEntryPrice,
-        inputExitPrice,
-        inputExpirationTimeStamp,
-        inputStrike,
-        inputIsCall); //Might be nice to do
-
-        tradeNum += 1;
+        inputEntry,
+        inputOptionsData);
+        tradeNum ++;
     }
-    // function closeTrade () {}
-
-    function clear_log() public onlyServer {
-        for(uint256 i=0; i <= tradeNum; i++) {
-            log[i] = blankTrade;
-        }
-        tradeNum = 0;
+    event newCloseTrade(uint tradeID, string exit);
+    function closeTrade(
+        uint256 tradeID,
+        string memory inputExit
+        ) public onlyTrader {
+        log[tradeID].exit = inputExit;
+        emit newCloseTrade(tradeID, inputExit);
     }
-
-    // Event -- emit check for server address
-    
-    
-    function checkServer () public view returns(address payable, address payable)  { 
-        
-        return (server, trader) ;
+    function setVerification(
+        uint tradeID ,
+        bool Verification
+    ) public onlyServer{
+        log[tradeID].Verified = Verification ;
+    }
+    // function clear_log() public onlyServer {
+    //     for(uint256 i=0; i <= tradeNum; i++) {
+    //         log[i] = blankTrade;
+    //     }
+    //     tradeNum = 0;
+    // }
+    function checkTrader () public view returns(address payable) {
+        return (trader);
+    }
+    function checkServer () public view returns(address payable) {
+        return (server);
     }
 }
-
 contract deployer {
-    
     address public deployer_address;
     address payable server;
     address payable newestTrader;
     uint TraderId ;
-
     constructor(
     ) public {
         server = msg.sender ;
-        deployer_address = address(this);
-        TraderId = 0 ; 
+        deployer_address = address(this) ;
+        TraderId = 0 ;
     }
-
     event logCreated(uint TraderId, address newLogAddress);
-    
     function createLog () public returns(address){
         newestTrader = msg.sender;
-        TraderId += 1 ;
+        TraderId ++ ;
         logger log = new logger(newestTrader, server, TraderId);
-
-
         emit logCreated(TraderId, address(log));
-
-
         return address(log);
-
-
     }
 }
