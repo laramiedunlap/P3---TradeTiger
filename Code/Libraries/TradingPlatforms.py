@@ -63,7 +63,7 @@ class alpaca_TradingPlatform(tradingPlatform):
         super().__init__(trade_platforms["alpaca"],contract)
     def openTrade(self,TraderAddress,Open,Symbol,Size,Fractional_shares,EntryPrice,ExpirationTimeStamp,Strike,IsCall):
         # Alpacea trading code
-        fractional_decimals = Fractional_shares/(10*len(str(Fractional_shares)))
+        fractional_decimals = Fractional_shares/(10**len(str(Fractional_shares)))
         self.trade_api.submit_order(
             # Still need to place:
             #   ExpirationTimeStamp,Strike,IsCall 
