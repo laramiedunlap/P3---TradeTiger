@@ -1,5 +1,6 @@
 # Exchangable Trading Platform
     # This can/should be its own .py file
+import alpaca
 trade_platforms = {
     "simulation": "Simulation",
     "alpaca" : "Alpaca",
@@ -49,21 +50,44 @@ def init_TradingPlatform(platform, contract):
 class simulation_TradingPlatform(tradingPlatform):
     def __init__(self,contract):
         super().__init__(trade_platforms["simulation"],contract)
-    def openTrade():
+    def openTrade(self,TraderAddress,Open,Symbol,Size,Fractional_shares,EntryPrice,ExpirationTimeStamp,Strike,IsCall):
         # Only necessary to send transaction to contract
         super().openTrade()
-    def closeTrade():
+    def closeTrade(self,TraderAddress,tradeID, ExitPrice):
         # Only necessary to send transaction to contract
         super().closeTrade()
 
 class alpaca_TradingPlatform(tradingPlatform):
+    trade_api = alpaca()
     def __init__(self,contract):
         super().__init__(trade_platforms["alpaca"],contract)
-    def openTrade(self):
-        super().openTrade()
+    def openTrade(self,TraderAddress,Open,Symbol,Size,Fractional_shares,EntryPrice,ExpirationTimeStamp,Strike,IsCall):
         # Alpacea trading code
-        return f"{self.platform} Open Trade!"
-    def closeTrade(self):
+        fractional_decimals = Fractional_shares/(10**len(str(Fractional_shares)))
+        self.trade_api.submit_order(
+            # Still need to place:
+            #   ExpirationTimeStamp,Strike,IsCall 
+            symbol = Symbol,
+            qty = Size + fractional_decimals,
+            side= "buy",
+            type= "market", # Is this what we want?
+            time_in_force = "day", # Is this what we want?
+            limit_price = EntryPrice, # Is this what we want?
+            stop_price = None,
+            client_order_id = None,
+            extended_hours = None,
+            order_class = None,
+            take_profit = None,
+            stop_loss = None,
+            trail_price = None,
+            trail_percent = None,
+            notional = None
+        )
+        success = True # @TODO
+        if success :
+            return super().openTrade(TraderAddress,Open,Symbol,Size,Fractional_shares,EntryPrice,ExpirationTimeStamp,Strike,IsCall)
+        return f"{self.platform} Open Trade Fail!"
+    def closeTrade(self,TraderAddress,tradeID, ExitPrice):
         super().closeTrade()
         # Alpacea trading code
         return f"{self.platform} Close Trade!"
@@ -71,11 +95,11 @@ class alpaca_TradingPlatform(tradingPlatform):
 class tda_TradingPlatform(tradingPlatform):
     def __init__(self,contract):
         super().__init__(trade_platforms["tda"],contract)
-    def openTrade(self):
+    def openTrade(self,TraderAddress,Open,Symbol,Size,Fractional_shares,EntryPrice,ExpirationTimeStamp,Strike,IsCall):
         super().openTrade()
         # tda trading code
         return f"{self.platform} Open Trade!"
-    def closeTrade(self):
+    def closeTrade(self,TraderAddress,tradeID, ExitPrice):
         super().closeTrade()
         # tda trading code
         return f"{self.platform} Close Trade!"
