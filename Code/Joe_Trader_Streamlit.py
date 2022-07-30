@@ -4,15 +4,25 @@ from web3 import Web3
 from pathlib import Path
 from dotenv import load_dotenv
 import streamlit as st
+from Libraries.TradingPlatforms import trade_platforms, init_TradingPlatform
+from Libraries.web3_contract import load_web3
 
 load_dotenv()
 
-w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
+contract, address, w3 = load_web3(".\Code\Contracts\ABI\Contract_abi.json")
 
+st.cache(allow_output_mutation=True)
 
-@st.cache(allow_output_mutation=True)
-def load_contract():
+########## SideBar ##########
+trading_platform = None
+# Select Trade Type Dropdown
+trading_choice = st.sidebar.selectbox("Trading Platform", list(trade_platforms.values()))
+# Start Trading Button
+if st.sidebar.button("Start Trading"):
+     trading_platform = init_TradingPlatform(trading_choice,contract)
+     st.sidebar.write(f"You have opened the Trading Platform.\n{trading_platform.__hello__()}")
 
+<<<<<<< HEAD
     with open(Path('../logger_abi.json')) as f:
         logger_abi = json.load(f)
 
@@ -30,47 +40,70 @@ contract = load_contract()
 
 
 st.title("Log a Trade")
+=======
+########## Trade Setup ##########
+st.title("Execute a Trade")
+>>>>>>> 6391e61a81f6f567b0d7e78c31a5498fbb3a0ab4
 accounts = w3.eth.accounts
 inputTraderAddress = st.selectbox("Select Trade User", options=accounts)
-inputOpen = st.radio(
-     "Open or Close a Trade",
-     ('1','0'))
 
-if inputOpen == '1':
-     st.write('Open Trade')
+if (trading_platform == None):
+     st.header("Select Trading Platform to Start Trading")
 else:
-     st.write("Close Trade")
+     ########## Tabs ##########
+     tab_open, tab_close = st.tabs(["Open Trade","Close Trade"])
+     with tab_open:
+          st.header("Opening a Trade")
+          inputOpen = 1
+          inputSymbol = st.text_input("Symbol")
+          inputSize = st.number_input("Size")
+          inputFractional_shares = st.number_input("Fractional Shares")
+          inputEntryPrice = st.text_input("Entry Price")
+          inputExpirationTimeStamp = st.time_input("Expiration") # Hide on Close
+          inputStrike = st.text_input("Strike")# Hide on Close
+          inputIsCall = st.radio(# Hide on Close
+               "Call or Put",
+               ('1','0'))
+          if inputIsCall == '1':# Hide on Close
+               st.write('Call')
+          else:
+               st.write("Put")
+          if st.button("Open Trade"):
+               # openTrade(self,TraderAddress,Open,Symbol,Size,Fractional_shares,EntryPrice,ExpirationTimeStamp,Strike,IsCall)
+               tx_hash = trading_platform.openTrade(
+                    inputTraderAddress,
+                    inputOpen,
+                    inputSymbol,
+                    inputSize,
+                    inputFractional_shares,
+                    inputEntryPrice,
+                    inputExpirationTimeStamp,
+                    inputStrike,
+                    inputIsCall)
+               receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+               st.write("Transaction receipt mined:")
+               st.write(dict(receipt))
+          st.markdown("---")
+     with tab_close:
+          st.header("Closing a Trade")
+          inputOpen = 0
+          inputTradeID = st.text_input("Exit Price (Replace with Open Trade Dropdown")
+          inputExitPrice = st.text_input("Exit Price (Should just auto fetch (show with a refresh button), rather than input)")
+          if st.button("Close Trade"):
+               # closeTrade(self,TraderAddress,tradeID, ExitPrice)
+               tx_hash = trading_platform.closeTrade(
+                    inputTraderAddress,
+                    inputTradeID,
+                    inputExitPrice
+                    )
+               receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+               st.write("Transaction receipt mined:")
+               st.write(dict(receipt))
+          st.markdown("---")
 
-inputSymbol = st.text_input("Symbol")
-inputSize = st.number_input("Size")
-inputFractional_shares = st.number_input("Fractional Shares")
-if inputOpen == '1':
-     inputEntryPrice = st.text_input("Entry Price")
-else: inputExitPrice = st.text_input("Exit Price")
-inputExpirationTimeStamp = st.time_input("Expiration") # Hide on Close
-inputStrike = st.text_input("Strike")# Hide on Close
-inputIsCall = st.radio(# Hide on Close
-     "Call or Put",
-     ('1','0'))
+# inputOpen = st.radio(
+#      "Open or Close a Trade",
+#      ('1','0'))
 
-if inputIsCall == '1':# Hide on Close
-     st.write('Call')
-else:
-     st.write("Put")
-if st.button("Log Trade"):
-    tx_hash = contract.functions.add_trade(inputTraderAddress,
-    inputOpen,
-    inputSymbol,
-    inputSize,
-    inputFractional_shares,
-    inputEntryPrice,
-    inputExitPrice,
-    inputExpirationTimeStamp,
-    inputStrike,
-    inputIsCall
-    ).transact({'from': address, 'gas': 1000000})
 
-    receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-    st.write("Transaction receipt mined:")
-    st.write(dict(receipt))
-st.markdown("---")
+

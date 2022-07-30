@@ -2,12 +2,8 @@
 	{
 		"constant": true,
 		"inputs": [],
-		"name": "checkServer",
+		"name": "checkTrader",
 		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			},
 			{
 				"name": "",
 				"type": "address"
@@ -45,10 +41,6 @@
 				"type": "uint256"
 			},
 			{
-				"name": "inputExitPrice",
-				"type": "uint256"
-			},
-			{
 				"name": "inputExpirationTimeStamp",
 				"type": "uint256"
 			},
@@ -61,7 +53,81 @@
 				"type": "bool"
 			}
 		],
-		"name": "add_trade",
+		"name": "open_trade",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "subscribers",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "checkServer",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "clearSubscriber",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "checkSubscriptionNumbers",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "tradeID",
+				"type": "uint256"
+			},
+			{
+				"name": "inputExitPrice",
+				"type": "uint256"
+			}
+		],
+		"name": "close_trade",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -71,6 +137,15 @@
 		"constant": false,
 		"inputs": [],
 		"name": "clear_log",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "addSubscriber",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
