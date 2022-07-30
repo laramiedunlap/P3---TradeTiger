@@ -13,7 +13,7 @@ w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
 @st.cache(allow_output_mutation=True)
 def load_contract():
 
-    with open(Path('./sample_logger_contract_abi.json')) as f:
+    with open(Path('../logger_abi.json')) as f:
         logger_abi = json.load(f)
 
     contract_address = os.getenv("LOGGER_CONTRACT_ADDRESS")
