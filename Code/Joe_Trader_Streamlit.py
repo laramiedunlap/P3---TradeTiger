@@ -11,7 +11,7 @@ load_dotenv()
 
 contract, address, w3 = load_web3(".\Code\Contracts\ABI\Contract_abi.json")
 
-st.cache(allow_output_mutation=True)
+@st.cache(allow_output_mutation=True)
 
 ########## SideBar ##########
 trading_platform = None
@@ -33,18 +33,19 @@ else:
      ########## Tabs ##########
      tab_open, tab_close = st.tabs(["Open Trade","Close Trade"])
      with tab_open:
+          """TODO Separate into multiple columns One Stock one Options using st.columns"""
           st.header("Opening a Trade")
           inputOpen = 1
           inputSymbol = st.text_input("Symbol")
           inputSize = st.number_input("Size")
           inputFractional_shares = st.number_input("Fractional Shares")
           inputEntryPrice = st.text_input("Entry Price")
-          inputExpirationTimeStamp = st.time_input("Expiration") # Hide on Close
-          inputStrike = st.text_input("Strike")# Hide on Close
-          inputIsCall = st.radio(# Hide on Close
+          inputExpirationTimeStamp = st.time_input("Expiration")
+          inputStrike = st.text_input("Strike")
+          inputIsCall = st.radio(
                "Call or Put",
                ('1','0'))
-          if inputIsCall == '1':# Hide on Close
+          if inputIsCall == '1': # TODO This causes a reset of the display
                st.write('Call')
           else:
                st.write("Put")

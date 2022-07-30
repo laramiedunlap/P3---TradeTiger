@@ -1,164 +1,141 @@
 pragma solidity 0.5.0;
-
 contract logger {
     address payable trader;
-    uint256 traderID;
     address payable server;
-    uint256 number_of_trades;
-    uint256 subscriptionCost_inWei;
-    uint256 number_of_subscribers;
-    mapping(uint256 => address) public subscribers;
-
+    uint256 TraderId;
+    uint tradeNum;
     constructor(
         address payable newTrader,
         address payable _server,
-        uint256 _traderID
+        uint _TraderId
     ) public { //Should check ERC20Detailed to be sure I am including all the security
         trader = newTrader;
-        traderID = _traderID;
         server = _server;
-        number_of_trades = 0;
-        number_of_subscribers = 0;
-        subscriptionCost_inWei = 3065346022;
+        TraderId = _TraderId;
+        tradeNum = 0;
     }
-    
-    modifier onlyTrader {
-        require(msg.sender == trader, "You are not this logs trader!");
-        _;
-    }
-    modifier onlyServer {
-        require(msg.sender == server, "You are not the server!");
-        _;
-    }
-
-    struct Gradable_Trade {
-        uint TradeId ;
+    struct gradableTrade {
+        uint tradeNum ;
         address payable traderAddress ;
         bool open ; //open == True, closed == False
         string symbol ;
-        int size ; // use negative for short position 
-        int fractional_shares ;
-        uint entryPrice ;
-        uint exitPrice ;
-        uint expirationTimeStamp ;
-        uint strike ;
-        bool isCall ; 
+        string size ; // use negative for short position
+        string entry ; // price, time
+        string exit ; // price, time
+        //options data //"30-7-2022, 27.20, 1"
+        string optionData ; //strike, isCall, expirationTimeStamp
+        //Server Functions
+        bool Verified ;
     }
-    Gradable_Trade blankTrade = Gradable_Trade(
-        115792089237316195423570985008687907853269984665640564039457584007913129639935, //Nonce (solidity true max int)
-        address(0), // traderAddress
-        false, // open
-        "0", // symbol
-        0, // size
-        0, // fractional_shares
-        0, // entryPrice
-        0, // exitPrice
-        0, // expirationTimeStamp
-        0, // strike
-        false // isCall
-    );
-    mapping(uint256 => Gradable_Trade) public log;
-
-    function open_trade(
+    // gradableTrade blankTrade = gradableTrade(
+    //     115792089237316195423570985008687907853269984665640564039457584007913129639935, //Nonce (solidity true max int)
+    //     address(0), // traderAddress
+    //     false, // open
+    //     "", // symbol
+    //     "", // size
+    //     "", // entryPrice
+    //     "", // entryTime
+    //     "", // exitPrice
+    //     "", //exitTime
+    //     "", // expirationTimeStamp
+    //     "", // strike
+    //     false, // isCall
+    //     false //Verified
+    // );
+    modifier onlyTrader {
+        require(msg.sender == trader, "You are not the trader associated with this log!");
+        _;
+    }
+    modifier onlyServer {
+        require(msg.sender == server, "You are not the server");
+        _;
+    }
+    mapping(uint256 => gradableTrade) public log;
+    //might want to do this as well for a permenant record
+    // event Logging(uint256 logNum, trade newTrade);
+    event newTrade (
+        uint TraderId,
+        address payable inputTraderAddress,
+        uint tradeNum,
+        bool inputOpen,
+        string inputSymbol,
+        string inputSize,
+        string inputEntry,
+        string inputOptionsData);
+    function openTrade (
         address payable inputTraderAddress,
         bool inputOpen,
         string memory inputSymbol,
-        int inputSize,
-        int inputFractional_shares,
-        uint inputEntryPrice,
-        uint inputExpirationTimeStamp,
-        uint inputStrike,
-        bool inputIsCall
+        string memory inputSize,
+        string memory inputEntry,
+        string memory inputOptionsData
         ) public onlyTrader {
-        log[number_of_trades] = Gradable_Trade(
-            number_of_trades,
+        log[tradeNum] = gradableTrade(
+            tradeNum,
             inputTraderAddress,
             inputOpen,
             inputSymbol,
             inputSize,
-            inputFractional_shares,
-            inputEntryPrice,
-            0,
-            inputExpirationTimeStamp,
-            inputStrike,
-            inputIsCall
+            inputEntry,
+            "",
+            inputOptionsData,
+            false
         );
-        number_of_trades++;
+        emit newTrade(
+        TraderId,
+        inputTraderAddress,
+        tradeNum,
+        inputOpen,
+        inputSymbol,
+        inputSize,
+        inputEntry,
+        inputOptionsData);
+        tradeNum ++;
     }
-    function close_trade(
+    event newCloseTrade(uint tradeID, string exit);
+    function closeTrade(
         uint256 tradeID,
-        uint inputExitPrice
+        string memory inputExit
         ) public onlyTrader {
-        log[tradeID].exitPrice = inputExitPrice;
-        // emit Logging(number_of_trades, trade); //Might be nice to do
-        number_of_trades++;
+        log[tradeID].exit = inputExit;
+        emit newCloseTrade(tradeID, inputExit);
     }
-
-    function clear_log() public onlyServer {
-        for(uint256 i=0; i < number_of_trades; i++) {
-            log[i] = blankTrade;
-        }
-        number_of_trades = 0;
+    function setVerification(
+        uint tradeID ,
+        bool Verification
+    ) public onlyServer{
+        log[tradeID].Verified = Verification ;
     }
-
+    // function clear_log() public onlyServer {
+    //     for(uint256 i=0; i <= tradeNum; i++) {
+    //         log[i] = blankTrade;
+    //     }
+    //     tradeNum = 0;
+    // }
     function checkTrader () public view returns(address payable) {
         return (trader);
     }
     function checkServer () public view returns(address payable) {
         return (server);
     }
-
-    // returning/sharing mappings is a bit tricky, not impossible but tricky, saving challenge for later
-    // function viewLog() public view returns(mapping(uint256 => Gradable_Trade)) {
-    //     //This should ONLY be executable by the Trader OR a Subscriber...
-    //     return log;
-    // }
-    // function checkSubscribers () public view returns(mapping(uint256 => address)) {
-    //     return (subscribers);
-    // }
-
-    function checkSubscriptionNumbers () public view returns(uint256) {
-        return (number_of_subscribers);
-    }
-    function addSubscriber() public {
-        //Transfer subscription amount to Logger
-        subscribers[number_of_subscribers];
-        number_of_subscribers++;
-    }
-    function clearSubscriber() public onlyServer {
-        for(uint256 i=0; i < number_of_subscribers; i++) {
-            subscribers[i] = address(0);
-        }
-        number_of_subscribers = 0;
-    }
 }
-
 contract deployer {
     address public deployer_address;
     address payable server;
     address payable newestTrader;
-    uint TraderID ;
-
+    uint TraderId ;
     constructor(
     ) public {
         server = msg.sender ;
-        deployer_address = address(this);
-        TraderID = 0 ; 
+        deployer_address = address(this) ;
+        TraderId = 0 ;
     }
-
-    event logCreated(uint TraderID, address newLogAddress);
-    
+    event logCreated(uint TraderId, address newLogAddress);
     function createLog () public returns(address){
         newestTrader = msg.sender;
-        TraderID ++ ;
-        logger log = new logger(newestTrader, server, TraderID);
-
-
-        emit logCreated(TraderID, address(log));
-
-
+        TraderId ++ ;
+        logger log = new logger(newestTrader, server, TraderId);
+        emit logCreated(TraderId, address(log));
         return address(log);
-
-
     }
 }
