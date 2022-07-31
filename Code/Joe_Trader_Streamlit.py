@@ -12,9 +12,12 @@ load_dotenv()
 contract, address, w3 = load_web3(".\Code\Contracts\ABI\Contract_abi.json")
 
 @st.cache(allow_output_mutation=True)
+def setup():
+     return init_TradingPlatform(None,None)
+trading_platform = setup()
 
 ########## SideBar ##########
-trading_platform = None
+
 # Select Trade Type Dropdown
 trading_choice = st.sidebar.selectbox("Trading Platform", list(trade_platforms.values()))
 # Start Trading Button
@@ -27,7 +30,7 @@ st.title("Execute a Trade")
 accounts = w3.eth.accounts
 inputTraderAddress = st.selectbox("Select Trade User", options=accounts)
 
-if (trading_platform == None):
+if (trading_platform.platform == None):
      st.header("Select Trading Platform to Start Trading")
 else:
      ########## Tabs ##########

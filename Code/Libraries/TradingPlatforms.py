@@ -1,6 +1,7 @@
 # Exchangable Trading Platform
     # This can/should be its own .py file
 from Libraries.alpaca import alpaca
+from Libraries.misc import list_to_string
 import pandas as pd
 trade_platforms = {
     "simulation": "Simulation",
@@ -24,16 +25,15 @@ class tradingPlatform :
             Open,
             Symbol,
             Size,
-            str([EntryPrice, EntryTime]).strip("[]"),
-            str([ExpirationTimeStamp, Strike, IsCall]).strip("[]"),
+            list_to_string([EntryPrice, EntryTime]),
+            list_to_string([ExpirationTimeStamp, Strike, IsCall]),
             ).transact({'from': TraderAddress, 'gas': 1000000})
-    def closeTrade(self,TraderAddress,tradeID,exitPrice,exitTime:pd.dateTime):
+    def closeTrade(self,TraderAddress,tradeID,exitPrice,exitTime):
         # To create/send transaction to Contract
         return self.contract.functions.close_trade(
             TraderAddress,
             tradeID,
-            exitPrice,
-            int(exitTime.timetuple())
+            list_to_string([exitPrice,exitTime])
             ).transact({'from': TraderAddress, 'gas': 1000000})
 def init_TradingPlatform(platform, contract):
     if platform == trade_platforms["simulation"]:
@@ -43,7 +43,7 @@ def init_TradingPlatform(platform, contract):
     elif platform == trade_platforms["tda"]:
         return tda_TradingPlatform(contract)
     else:
-        return tradingPlatform(None)
+        return tradingPlatform(None,None)
 
 class simulation_TradingPlatform(tradingPlatform):
     def __init__(self,contract):
