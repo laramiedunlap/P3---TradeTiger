@@ -26,7 +26,7 @@ class tradingPlatform :
             Symbol,
             Size,
             list_to_string([EntryPrice, EntryTime]),
-            list_to_string([ExpirationTimeStamp, Strike, IsCall]),
+            list_to_string([Strike, IsCall,ExpirationTimeStamp]),
             ).transact({'from': TraderAddress, 'gas': 1000000})
     def closeTrade(self,TraderAddress,tradeID,exitPrice,exitTime):
         # To create/send transaction to Contract
