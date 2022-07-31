@@ -1,6 +1,8 @@
 # Exchangable Trading Platform
     # This can/should be its own .py file
-import alpaca
+from Libraries.alpaca import alpaca
+from Libraries.misc import list_to_string
+import pandas as pd
 trade_platforms = {
     "simulation": "Simulation",
     "alpaca" : "Alpaca",
@@ -16,26 +18,22 @@ class tradingPlatform :
     platform = None
     def __hello__(self):
         return f"This is a {self.platform} trading platform."
-    def openTrade(self,TraderAddress,Open,Symbol,Size,Fractional_shares,EntryPrice,ExpirationTimeStamp,Strike,IsCall):
+    def openTrade(self,TraderAddress,TraderID,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall):
         # To create/send transaction to Contract
         return self.contract.functions.add_trade(
-            TraderAddress,
+            TraderID,
             Open,
             Symbol,
             Size,
-            Fractional_shares,
-            EntryPrice,
-            # ExitPrice,
-            ExpirationTimeStamp,
-            Strike,
-            IsCall
+            list_to_string([EntryPrice, EntryTime]),
+            list_to_string([Strike, IsCall,ExpirationTimeStamp]),
             ).transact({'from': TraderAddress, 'gas': 1000000})
-    def closeTrade(self,TraderAddress,tradeID, ExitPrice):
+    def closeTrade(self,TraderAddress,tradeID,exitPrice,exitTime):
         # To create/send transaction to Contract
         return self.contract.functions.close_trade(
             TraderAddress,
             tradeID,
-            ExitPrice,
+            list_to_string([exitPrice,exitTime])
             ).transact({'from': TraderAddress, 'gas': 1000000})
 def init_TradingPlatform(platform, contract):
     if platform == trade_platforms["simulation"]:
@@ -45,7 +43,7 @@ def init_TradingPlatform(platform, contract):
     elif platform == trade_platforms["tda"]:
         return tda_TradingPlatform(contract)
     else:
-        return tradingPlatform(None)
+        return tradingPlatform(None,None)
 
 class simulation_TradingPlatform(tradingPlatform):
     def __init__(self,contract):

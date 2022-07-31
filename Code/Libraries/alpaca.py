@@ -16,7 +16,7 @@ class alpaca:
         self.API_SECRET = os.getenv("APCA_API_SECRET_KEY")
         self.BASE_URL = os.getenv("APCA_API_BASE_URL")
         self.alpaca = tradeapi.REST(self.API_KEY, self.API_SECRET, self.BASE_URL)
-        self.account = alpaca.get_account()
+        # self.account = alpaca.get_account()
     def submit_order(
         self,
         symbol: str,
