@@ -48,12 +48,12 @@ def init_TradingPlatform(platform, contract):
 class simulation_TradingPlatform(tradingPlatform):
     def __init__(self,contract):
         super().__init__(trade_platforms["simulation"],contract)
-    def openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,ExpirationTimeStamp,Strike,IsCall):
+    def openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall):
         # Only necessary to send transaction to contract
-        super().openTrade()
-    def closeTrade(self,TraderAddress,tradeID, ExitPrice):
+        return super().openTrade(TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall)
+    def closeTrade(self,TraderAddress,tradeID,Symbol,Size,ExitPrice):
         # Only necessary to send transaction to contract
-        super().closeTrade()
+        return super().closeTrade(TraderAddress,tradeID, ExitPrice)
 
 class alpaca_TradingPlatform(tradingPlatform):
     trade_api = alpaca()
@@ -91,12 +91,10 @@ class alpaca_TradingPlatform(tradingPlatform):
 
 class tda_TradingPlatform(tradingPlatform):
     def __init__(self,contract):
-        super().__init__(trade_platforms["tda"],contract)
-    def openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,ExpirationTimeStamp,Strike,IsCall):
-        super().openTrade()
-        # tda trading code
-        return f"{self.platform} Open Trade!"
-    def closeTrade(self,TraderAddress,tradeID, ExitPrice):
-        super().closeTrade()
-        # tda trading code
-        return f"{self.platform} Close Trade!"
+        super().__init__(trade_platforms["simulation"],contract)
+    def openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall):
+        # Only necessary to send transaction to contract
+        return super().openTrade(TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall)
+    def closeTrade(self,TraderAddress,tradeID,Symbol,Size,ExitPrice):
+        # Only necessary to send transaction to contract
+        return super().closeTrade(TraderAddress,tradeID, ExitPrice)
