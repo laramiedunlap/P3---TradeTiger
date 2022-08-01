@@ -59,7 +59,7 @@ class alpaca_TradingPlatform(tradingPlatform):
     trade_api = alpaca()
     def __init__(self,contract):
         super().__init__(trade_platforms["alpaca"],contract)
-    def openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,ExpirationTimeStamp,Strike,IsCall):
+    def openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall):
         # Alpacea trading code
         order = self.trade_api.submit_order(
             # Still need to place:
@@ -71,7 +71,7 @@ class alpaca_TradingPlatform(tradingPlatform):
         )
         success = (order["OrderStatus"] in ["Accepted","AcceptedForBidding","Calculated","DoneForDay","Expired","Filled","New","PartiallyFilled"])
         if success :
-            return super().openTrade(TraderAddress,Open,Symbol,Size,EntryPrice,ExpirationTimeStamp,Strike,IsCall)
+            return super().openTrade(TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall)
         return f"{self.platform} Open Trade Failed! - Order Status: {order['OrderStatus']}"
     def closeTrade(self,TraderAddress,tradeID,Symbol,Size,ExitPrice):
         # TODO How does this know the symbol and size?
