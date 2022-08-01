@@ -79,11 +79,16 @@ from typing import Any, List
 import datetime as datetime
 from web3 import Web3
 from pathlib import Path
+import sys
+import threading
+import os
 from dotenv import load_dotenv
 import streamlit as st
 from Libraries.TradingPlatformsTest import trade_platforms, init_TradingPlatform, tradingPlatform
 from Libraries.web3_contract import load_web3
 
+# sys.setrecursionlimit(10**6)
+# threading.stack_size(2**26)
 load_dotenv()
 
 contract, address, w3 = load_web3("../Code/Contracts/ABI/Contract_abi.json")

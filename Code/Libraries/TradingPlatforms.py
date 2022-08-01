@@ -61,34 +61,33 @@ class alpaca_TradingPlatform(tradingPlatform):
         super().__init__(trade_platforms["alpaca"],contract)
     def openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,ExpirationTimeStamp,Strike,IsCall):
         # Alpacea trading code
-        # fractional_decimals = Fractional_shares/(10**len(str(Fractional_shares)))
-        self.trade_api.submit_order(
+        order = self.trade_api.submit_order(
             # Still need to place:
             #   ExpirationTimeStamp,Strike,IsCall 
             symbol = Symbol,
             qty = Size, #+ fractional_decimals,
             side= "buy",
             type= "market", # Is this what we want?
-            time_in_force = "day", # Is this what we want?
-            limit_price = EntryPrice, # Is this what we want?
-            stop_price = None,
-            client_order_id = None,
-            extended_hours = None,
-            order_class = None,
-            take_profit = None,
-            stop_loss = None,
-            trail_price = None,
-            trail_percent = None,
-            notional = None
         )
-        success = True # @TODO
+        success = (order["OrderStatus"] in ["Accepted","AcceptedForBidding","Calculated","DoneForDay","Expired","Filled","New","PartiallyFilled"])
         if success :
             return super().openTrade(TraderAddress,Open,Symbol,Size,EntryPrice,ExpirationTimeStamp,Strike,IsCall)
-        return f"{self.platform} Open Trade Fail!"
-    def closeTrade(self,TraderAddress,tradeID, ExitPrice):
-        super().closeTrade()
+        return f"{self.platform} Open Trade Failed! - Order Status: {order['OrderStatus']}"
+    def closeTrade(self,TraderAddress,tradeID,Symbol,Size,ExitPrice):
+        # TODO How does this know the symbol and size?
         # Alpacea trading code
-        return f"{self.platform} Close Trade!"
+        order = self.trade_api.submit_order(
+            # Still need to place:
+            #   ExpirationTimeStamp,Strike,IsCall 
+            symbol = Symbol,
+            qty = Size,
+            side= "sell",
+            type= "market", # Is this what we want?
+        )
+        success = (order["OrderStatus"] in ["Accepted","AcceptedForBidding","Calculated","DoneForDay","Expired","Filled","New","PartiallyFilled"])
+        if success :
+            return super().closeTrade(TraderAddress,tradeID, ExitPrice)
+        return f"{self.platform} Close Trade Failed! - Order Status: {order['OrderStatus']}"
 
 class tda_TradingPlatform(tradingPlatform):
     def __init__(self,contract):

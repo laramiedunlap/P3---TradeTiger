@@ -15,16 +15,16 @@ contract logger {
         tradeNum = 0;
     }
     struct gradableTrade {
-        uint tradeNum ;
+        uint TraderId ; 
         address payable traderAddress ;
+        uint tradeNum ;
         bool open ; //open == True, closed == False
         string symbol ;
         string size ; // use negative for short position
-        string entry ; // price, time
-        string exit ; // price, time
-        //options data //"30-7-2022, 27.20, 1"
-        string optionData ; //expirationTimeStamp, strike, isCall
-        //Server Functions
+        string entryPriceEntryTime ;
+        string exitPriceExitTime ;
+        //options data
+        string optionsData;
         bool Verified ;
     }
     // gradableTrade blankTrade = gradableTrade(
@@ -60,25 +60,27 @@ contract logger {
         bool inputOpen,
         string inputSymbol,
         string inputSize,
-        string inputEntry,
-        string inputOptionsData);
+        string inputEntryPriceEntryTime,
+        string optionsData);
+
     function openTrade (
         address payable inputTraderAddress,
         bool inputOpen,
         string memory inputSymbol,
         string memory inputSize,
-        string memory inputEntry,
+        string memory inputEntryPriceEntryTime,
         string memory inputOptionsData
         ) public onlyTrader {
         log[tradeNum] = gradableTrade(
-            tradeNum,
+            TraderId,
             inputTraderAddress,
+            tradeNum,
             inputOpen,
             inputSymbol,
             inputSize,
-            inputEntry,
-            "",
+            inputEntryPriceEntryTime,
             inputOptionsData,
+            "",
             false
         );
         emit newTrade(
@@ -88,23 +90,26 @@ contract logger {
         inputOpen,
         inputSymbol,
         inputSize,
-        inputEntry,
+        inputEntryPriceEntryTime,
         inputOptionsData);
+
         tradeNum ++;
     }
-    event newCloseTrade(uint tradeID, string exit);
+    event newCloseTrade(uint256 tradeNum, string exitPriceExitTime );
     function closeTrade(
-        uint256 tradeID,
-        string memory inputExit
+        uint256 tradeNum,
+        string memory inputExitPriceExitTime
         ) public onlyTrader {
-        log[tradeID].exit = inputExit;
-        emit newCloseTrade(tradeID, inputExit);
+        log[tradeNum].exitPriceExitTime = inputExitPriceExitTime;
+        
+        emit newCloseTrade( tradeNum, inputExitPriceExitTime);
     }
+
     function setVerification(
-        uint tradeID ,
+        uint tradeNum ,
         bool Verification
     ) public onlyServer{
-        log[tradeID].Verified = Verification ;
+        log[tradeNum].Verified = Verification ;
     }
     // function clear_log() public onlyServer {
     //     for(uint256 i=0; i <= tradeNum; i++) {
@@ -139,3 +144,28 @@ contract deployer {
         return address(log);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
