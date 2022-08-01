@@ -59,7 +59,7 @@ class alpaca_TradingPlatform(tradingPlatform):
     trade_api = alpaca()
     def __init__(self,contract):
         super().__init__(trade_platforms["alpaca"],contract)
-    def openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,ExpirationTimeStamp,Strike,IsCall):
+    def openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall):
         # Alpacea trading code
         # fractional_decimals = Fractional_shares/(10**len(str(Fractional_shares)))
         self.trade_api.submit_order(
@@ -83,7 +83,7 @@ class alpaca_TradingPlatform(tradingPlatform):
         )
         success = True # @TODO
         if success :
-            return super().openTrade(TraderAddress,Open,Symbol,Size,EntryPrice,ExpirationTimeStamp,Strike,IsCall)
+            return super().openTrade(TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall)
         return f"{self.platform} Open Trade Fail!"
     def closeTrade(self,TraderAddress,tradeID, ExitPrice):
         super().closeTrade()
