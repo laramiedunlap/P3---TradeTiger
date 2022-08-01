@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.0;
 
 // This is a simulated bank account for the purposes of this project.
 // The bank account receives subscription fees from subscribers in USD,

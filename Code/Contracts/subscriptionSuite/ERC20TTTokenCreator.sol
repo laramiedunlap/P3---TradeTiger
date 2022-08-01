@@ -1,8 +1,6 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.0;
 
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC20/ERC20.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC20/ERC20Detailed.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC20/ERC20Mintable.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol";
 
 // Subscription fees will be collected in USD or 1 to 1 USD equivalent 
 // and placed in a bank account.
@@ -21,16 +19,14 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5
 // them. Then the tokens move directly into the escrow contract of the Trader that
 // the subscriber is following.
 
-contract TTToken is ERC20, ERC20Detailed, ERC20Mintable {
-    constructor(
+contract TTToken is ERC20 {
+    constructor() ERC20("TTToken", "TTT") {}
 
-        string memory name,
-        string memory symbol,
-        uint 0
-
-        ) ERC20Detailed(name, symbol, 18) public {
-
-        mint(msg.sender, 0);
-
+//  Add function to collect verified subscription payment information from the 
+//  Account Manager Oracle and mint tokens in a 1:1 USD to token ratio, and
+//  then transfer (first) to subscriber, and (second) automatically re-route
+//  to the Trader Escrow Contract that the subscriber has subscribed to.
+    function mintSubscriptionTokens() public {
+        _mint()
     }
 }
