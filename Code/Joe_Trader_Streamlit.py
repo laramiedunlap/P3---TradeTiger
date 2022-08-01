@@ -61,15 +61,16 @@ else:
           interface.inputSize = st.number_input("Size")
           interface.inputEntryPrice = st.text_input("Entry Price")
           interface.inputEntryTime = st.time_input("Entry Time")
-          interface.inputExpirationTimeStamp = st.time_input("Expiration")
-          interface.inputStrike = st.text_input("Strike")
-          interface.inputIsCall = st.radio(
-               "Call or Put",
-               ('1','0'))
-          if interface.inputIsCall == '1': # TODO This causes a reset of the display
-               st.write('Call')
-          else:
-               st.write("Put")
+          if (interface.trading_platform.platform != trade_platforms["alpaca"]):
+               interface.inputExpirationTimeStamp = st.time_input("Expiration")
+               interface.inputStrike = st.text_input("Strike")
+               interface.inputIsCall = st.radio(
+                    "Call or Put",
+                    ('1','0'))
+               if interface.inputIsCall == '1': # TODO This causes a reset of the display
+                    st.write('Call')
+               else:
+                    st.write("Put")
           if st.button("Open Trade"):
                # openTrade(self,TraderAddress,Open,Symbol,Size,Fractional_shares,EntryPrice,ExpirationTimeStamp,Strike,IsCall)
                tx_hash = interface.trading_platform.openTrade(
