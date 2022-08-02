@@ -48,18 +48,18 @@ def init_TradingPlatform(platform, contract):
 class simulation_TradingPlatform(tradingPlatform):
     def __init__(self,contract):
         super().__init__(trade_platforms["simulation"],contract)
-    def openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,ExpirationTimeStamp,Strike,IsCall):
+    def openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall):
         # Only necessary to send transaction to contract
-        super().openTrade()
-    def closeTrade(self,TraderAddress,tradeID, ExitPrice):
+        return super().openTrade(TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall)
+    def closeTrade(self,TraderAddress,tradeID,Symbol,Size,ExitPrice):
         # Only necessary to send transaction to contract
-        super().closeTrade()
+        return super().closeTrade(TraderAddress,tradeID, ExitPrice)
 
 class alpaca_TradingPlatform(tradingPlatform):
     trade_api = alpaca()
     def __init__(self,contract):
         super().__init__(trade_platforms["alpaca"],contract)
-    def openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,ExpirationTimeStamp,Strike,IsCall):
+    def openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall):
         # Alpacea trading code
         order = self.trade_api.submit_order(
             # Still need to place:
@@ -71,7 +71,7 @@ class alpaca_TradingPlatform(tradingPlatform):
         )
         success = (order["OrderStatus"] in ["Accepted","AcceptedForBidding","Calculated","DoneForDay","Expired","Filled","New","PartiallyFilled"])
         if success :
-            return super().openTrade(TraderAddress,Open,Symbol,Size,EntryPrice,ExpirationTimeStamp,Strike,IsCall)
+            return super().openTrade(TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall)
         return f"{self.platform} Open Trade Failed! - Order Status: {order['OrderStatus']}"
     def closeTrade(self,TraderAddress,tradeID,Symbol,Size,ExitPrice):
         # TODO How does this know the symbol and size?
@@ -91,12 +91,10 @@ class alpaca_TradingPlatform(tradingPlatform):
 
 class tda_TradingPlatform(tradingPlatform):
     def __init__(self,contract):
-        super().__init__(trade_platforms["tda"],contract)
-    def openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,ExpirationTimeStamp,Strike,IsCall):
-        super().openTrade()
-        # tda trading code
-        return f"{self.platform} Open Trade!"
-    def closeTrade(self,TraderAddress,tradeID, ExitPrice):
-        super().closeTrade()
-        # tda trading code
-        return f"{self.platform} Close Trade!"
+        super().__init__(trade_platforms["simulation"],contract)
+    def openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall):
+        # Only necessary to send transaction to contract
+        return super().openTrade(TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall)
+    def closeTrade(self,TraderAddress,tradeID,Symbol,Size,ExitPrice):
+        # Only necessary to send transaction to contract
+        return super().closeTrade(TraderAddress,tradeID, ExitPrice)
