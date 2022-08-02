@@ -32,5 +32,22 @@
 		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "TraderId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "newLogAddress",
+				"type": "address"
+			}
+		],
+		"name": "logCreated",
+		"type": "event"
 	}
 ]
