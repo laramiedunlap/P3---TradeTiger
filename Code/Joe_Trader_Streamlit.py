@@ -43,28 +43,8 @@ if st.sidebar.button("Start Trading"):
      interface.trading_platform = init_TradingPlatform(interface.trading_choice,contract)
      st.sidebar.write(f"You have opened the Trading Platform.\n{interface.trading_platform.__hello__()}")
 
-<<<<<<< HEAD
-    with open(Path('../logger_abi.json')) as f:
-        logger_abi = json.load(f)
-
-    contract_address = os.getenv("LOGGER_CONTRACT_ADDRESS")
-
-    contract = w3.eth.contract(
-        address=contract_address,
-        abi=logger_abi
-    )
-
-    return contract
-
-
-contract = load_contract()
-
-
-st.title("Log a Trade")
-=======
 ########## Trade Setup ##########
 st.title("Execute a Trade")
->>>>>>> 6391e61a81f6f567b0d7e78c31a5498fbb3a0ab4
 accounts = w3.eth.accounts
 interface.inputTraderAddress = st.selectbox("Select Trade User", options=accounts)
 
