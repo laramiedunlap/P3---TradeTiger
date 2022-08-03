@@ -30,52 +30,39 @@
 			},
 			{
 				"name": "inputSize",
-				"type": "int256"
+				"type": "string"
 			},
 			{
-				"name": "inputFractional_shares",
-				"type": "int256"
+				"name": "inputEntryPriceEntryTime",
+				"type": "string"
 			},
 			{
-				"name": "inputEntryPrice",
-				"type": "uint256"
-			},
-			{
-				"name": "inputExpirationTimeStamp",
-				"type": "uint256"
-			},
-			{
-				"name": "inputStrike",
-				"type": "uint256"
-			},
-			{
-				"name": "inputIsCall",
-				"type": "bool"
+				"name": "inputOptionsData",
+				"type": "string"
 			}
 		],
-		"name": "open_trade",
+		"name": "openTrade",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
-		"constant": true,
+		"constant": false,
 		"inputs": [
 			{
-				"name": "",
+				"name": "tradeNum",
 				"type": "uint256"
-			}
-		],
-		"name": "subscribers",
-		"outputs": [
+			},
 			{
-				"name": "",
-				"type": "address"
+				"name": "Verification",
+				"type": "bool"
 			}
 		],
+		"name": "setVerification",
+		"outputs": [],
 		"payable": false,
-		"stateMutability": "view",
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -94,58 +81,17 @@
 	},
 	{
 		"constant": false,
-		"inputs": [],
-		"name": "clearSubscriber",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "checkSubscriptionNumbers",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
 		"inputs": [
 			{
-				"name": "tradeID",
+				"name": "tradeNum",
 				"type": "uint256"
 			},
 			{
-				"name": "inputExitPrice",
-				"type": "uint256"
+				"name": "inputExitPriceExitTime",
+				"type": "string"
 			}
 		],
-		"name": "close_trade",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [],
-		"name": "clear_log",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [],
-		"name": "addSubscriber",
+		"name": "closeTrade",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -162,12 +108,16 @@
 		"name": "log",
 		"outputs": [
 			{
-				"name": "TradeId",
+				"name": "TraderId",
 				"type": "uint256"
 			},
 			{
 				"name": "traderAddress",
 				"type": "address"
+			},
+			{
+				"name": "tradeNum",
+				"type": "uint256"
 			},
 			{
 				"name": "open",
@@ -179,30 +129,22 @@
 			},
 			{
 				"name": "size",
-				"type": "int256"
+				"type": "string"
 			},
 			{
-				"name": "fractional_shares",
-				"type": "int256"
+				"name": "entryPriceEntryTime",
+				"type": "string"
 			},
 			{
-				"name": "entryPrice",
-				"type": "uint256"
+				"name": "exitPriceExitTime",
+				"type": "string"
 			},
 			{
-				"name": "exitPrice",
-				"type": "uint256"
+				"name": "optionsData",
+				"type": "string"
 			},
 			{
-				"name": "expirationTimeStamp",
-				"type": "uint256"
-			},
-			{
-				"name": "strike",
-				"type": "uint256"
-			},
-			{
-				"name": "isCall",
+				"name": "Verified",
 				"type": "bool"
 			}
 		],
@@ -219,10 +161,78 @@
 			{
 				"name": "_server",
 				"type": "address"
+			},
+			{
+				"name": "_TraderId",
+				"type": "uint256"
 			}
 		],
 		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "TraderId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "inputTraderAddress",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "tradeNum",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "inputOpen",
+				"type": "bool"
+			},
+			{
+				"indexed": false,
+				"name": "inputSymbol",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "inputSize",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "inputEntryPriceEntryTime",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "optionsData",
+				"type": "string"
+			}
+		],
+		"name": "newTrade",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "tradeNum",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "exitPriceExitTime",
+				"type": "string"
+			}
+		],
+		"name": "newCloseTrade",
+		"type": "event"
 	}
 ]

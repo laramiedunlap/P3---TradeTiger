@@ -9,14 +9,13 @@ class alpaca:
     API_KEY = "<Your API Key>"
     API_SECRET = "<Your Secret Key>"
     BASE_URL = "https://paper-api.alpaca.markets"
-    alpaca = None
+    alpaca_trader:tradeapi = None
     account = None
     def __init__(self):
         self.API_KEY = os.getenv("APCA_API_KEY_ID")
         self.API_SECRET = os.getenv("APCA_API_SECRET_KEY")
         self.BASE_URL = os.getenv("APCA_API_BASE_URL")
-        self.alpaca = tradeapi.REST(self.API_KEY, self.API_SECRET, self.BASE_URL)
-        # self.account = alpaca.get_account()
+        self.alpaca_trader = tradeapi.REST(self.API_KEY, self.API_SECRET, self.BASE_URL)
     def submit_order(
         self,
         symbol: str,
@@ -56,13 +55,17 @@ class alpaca:
         :param trail_percent: str of float
         :param notional: float. Mutually exclusive with "qty".
         """
-        return alpaca.submit_order(
-            self,symbol,qty,side,type,time_in_force,limit_price,stop_price,
+        return self.alpaca_trader.submit_order(
+            symbol,qty,side,type,time_in_force,limit_price,stop_price,
             client_order_id,extended_hours,order_class,take_profit,stop_loss,
             trail_price,trail_percent,notional
         )
     def list_posistions(self):
-        return alpaca.list_posistions()
+        return self.alpaca_trader.list_posistions()
+    
+    def current_price(self,symbol):
+        return self.alpaca_trader.get_bars(symbol,'1Min',limit=1).df['close'][0]
+    
 
 """  
 OrderExample({

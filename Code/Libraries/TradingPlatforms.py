@@ -2,38 +2,37 @@
     # This can/should be its own .py file
 from Libraries.alpaca import alpaca
 from Libraries.misc import list_to_string
-import pandas as pd
 trade_platforms = {
-    "simulation": "Simulation",
-    "alpaca" : "Alpaca",
-    "tda": "TD Ameritrade"
+    "simulation": "Manual Entry",
+    "alpaca" : "Alpaca"
 }
 
 # TradePlatform Classes
 class tradingPlatform :
     contract = None
+    platform = None
+    price_checker = None
     def __init__(self, platformType, contract):
         self.contract = contract
         self.platform = platformType
-    platform = None
+        self.price_checker = alpaca()
     def __hello__(self):
         return f"This is a {self.platform} trading platform."
-    def openTrade(self,TraderAddress,TraderID,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall):
+    def openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall):
         # To create/send transaction to Contract
-        return self.contract.functions.add_trade(
-            TraderID,
+        return self.contract.functions.openTrade(
+            TraderAddress,
             Open,
             Symbol,
-            Size,
-            list_to_string([EntryPrice, EntryTime]),
-            list_to_string([Strike, IsCall,ExpirationTimeStamp]),
+            str(Size),
+            list_to_string([EntryPrice, EntryTime]), #EntryPriceEntryTime
+            list_to_string([Strike, IsCall, ExpirationTimeStamp]) #OptionsData
             ).transact({'from': TraderAddress, 'gas': 1000000})
-    def closeTrade(self,TraderAddress,tradeID,exitPrice,exitTime):
+    def closeTrade(self,TraderAddress,tradeID,Symbol,Size,ExitPrice,ExitTime):
         # To create/send transaction to Contract
-        return self.contract.functions.close_trade(
-            TraderAddress,
-            tradeID,
-            list_to_string([exitPrice,exitTime])
+        return self.contract.functions.closeTrade(
+            int(tradeID),
+            list_to_string([ExitPrice,ExitTime])
             ).transact({'from': TraderAddress, 'gas': 1000000})
 def init_TradingPlatform(platform, contract):
     if platform == trade_platforms["simulation"]:
@@ -51,9 +50,9 @@ class simulation_TradingPlatform(tradingPlatform):
     def openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall):
         # Only necessary to send transaction to contract
         return super().openTrade(TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall)
-    def closeTrade(self,TraderAddress,tradeID,Symbol,Size,ExitPrice):
+    def closeTrade(self,TraderAddress,tradeID,Symbol,Size,ExitPrice,ExitTime):
         # Only necessary to send transaction to contract
-        return super().closeTrade(TraderAddress,tradeID, ExitPrice)
+        return super().closeTrade(TraderAddress,tradeID,Symbol,Size,ExitPrice,ExitTime)
 
 class alpaca_TradingPlatform(tradingPlatform):
     trade_api = alpaca()
@@ -69,12 +68,11 @@ class alpaca_TradingPlatform(tradingPlatform):
             side= "buy",
             type= "market", # Is this what we want?
         )
-        success = (order["OrderStatus"] in ["Accepted","AcceptedForBidding","Calculated","DoneForDay","Expired","Filled","New","PartiallyFilled"])
+        success = (order.status in ["accepted","accepted_for_bidding","calculated","done_for_day","filled","new","partially_filled"])
         if success :
             return super().openTrade(TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall)
         return f"{self.platform} Open Trade Failed! - Order Status: {order['OrderStatus']}"
-    def closeTrade(self,TraderAddress,tradeID,Symbol,Size,ExitPrice):
-        # TODO How does this know the symbol and size?
+    def closeTrade(self,TraderAddress,tradeID,Symbol,Size,ExitPrice,ExitTime):
         # Alpacea trading code
         order = self.trade_api.submit_order(
             # Still need to place:
@@ -84,9 +82,9 @@ class alpaca_TradingPlatform(tradingPlatform):
             side= "sell",
             type= "market", # Is this what we want?
         )
-        success = (order["OrderStatus"] in ["Accepted","AcceptedForBidding","Calculated","DoneForDay","Expired","Filled","New","PartiallyFilled"])
+        success = (order.status in ["accepted","accepted_for_bidding","calculated","done_for_day","filled","new","partially_filled"])
         if success :
-            return super().closeTrade(TraderAddress,tradeID, ExitPrice)
+            return super().closeTrade(TraderAddress,tradeID,Symbol,Size,ExitPrice,ExitTime)
         return f"{self.platform} Close Trade Failed! - Order Status: {order['OrderStatus']}"
 
 class tda_TradingPlatform(tradingPlatform):
@@ -95,6 +93,6 @@ class tda_TradingPlatform(tradingPlatform):
     def openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall):
         # Only necessary to send transaction to contract
         return super().openTrade(TraderAddress,Open,Symbol,Size,EntryPrice,EntryTime,ExpirationTimeStamp,Strike,IsCall)
-    def closeTrade(self,TraderAddress,tradeID,Symbol,Size,ExitPrice):
+    def closeTrade(self,TraderAddress,tradeID,Symbol,Size,ExitPrice,ExitTime):
         # Only necessary to send transaction to contract
-        return super().closeTrade(TraderAddress,tradeID, ExitPrice)
+        return super().closeTrade(TraderAddress,tradeID,Symbol,Size,ExitPrice,ExitTime)
