@@ -9,7 +9,7 @@ from Libraries.web3_contract import load_web3
 
 load_dotenv()
 
-contract, address, w3 = load_web3("../Code/Contracts/ABI/Contract_abi.json")
+contract, address, w3 = load_web3("../Code/Contracts/ABI/Logger_abi.json")
 
 @dataclass
 class interface_block:
@@ -34,7 +34,22 @@ if st.sidebar.button("Manage TradeTiger Subscriptions"):
 st.title("Subscribe to a Trader")
 
 interface.inputEmail = st.text_input("enter email")
-
 interface.inputSubscriberAddress = st.selectbox("Choose Your Wallet Address for Payment", options=accounts)
-
 interface.inputTraderAddress = st.text_input("enter a trader's address")
+#sub_cost = 
+#interface.inputSubCost = st.
+
+if st.button(f"Send {interface.inputTraderAddress} subCost and Subscribe"):
+    tx_hash = w3.contract.functions.subscribe(
+        interface.inputTraderAddress,
+        interface.subCost
+    ).transact({'from': inputSubscriberAddress, 'gas': 1000000})
+    receipt = dict(w3.eth.waitForTransactionReceipt(tx_hash))
+    st.write("Thanks for subscribing!")
+    subscription_data = {
+        "traderAddress": inputTraderAddress,
+        "subscriberAddress": inputSubscriberAddress,
+        "subscriberEmail": inputEmail,
+        "paymentConfirmation": receipt["Hash"]
+    }
+    subscriptions.append(receipt["inputTraderAddress"])
