@@ -3,8 +3,9 @@
 from Libraries.alpaca import alpaca
 from Libraries.misc import list_to_string
 trade_platforms = {
-    "simulation": "Manual Entry",
-    "alpaca" : "Alpaca"
+    'manual': "Manual Trade Entry",
+    "simulation": "Simulation Trading",
+    "alpaca" : "Alpaca Trading"
 }
 
 # TradePlatform Classes
@@ -39,10 +40,8 @@ def init_TradingPlatform(platform, contract):
         return simulation_TradingPlatform(contract)
     elif platform == trade_platforms["alpaca"]:
         return alpaca_TradingPlatform(contract)
-    elif platform == trade_platforms["tda"]:
-        return tda_TradingPlatform(contract)
-    else:
-        return tradingPlatform(None,None)
+    else: # Manual Entry
+        return tradingPlatform(trade_platforms["manual"],contract)
 
 class simulation_TradingPlatform(tradingPlatform):
     def __init__(self,contract):
