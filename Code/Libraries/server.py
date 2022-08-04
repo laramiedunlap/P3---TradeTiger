@@ -46,15 +46,27 @@ class Grader:
     def verify_trade(self):
         pass           
     
-def load_deployer_contract():
-    contract_address = os.getenv("DEPLOYER_ADDRESS") 
-    with open(Path('deployer.json')) as f:
-            deployer_abi = json.load(f)
+def load_deployer_contract(*args):
+    if not args:
+        contract_address = os.getenv("DEPLOYER_ADDRESS") 
+        with open(Path('deployer.json')) as f:
+                deployer_abi = json.load(f)
 
-    deployer_contract = w3.eth.contract(
-        address=contract_address,
-        abi=deployer_abi
-        )
+        deployer_contract = w3.eth.contract(
+            address=contract_address,
+            abi=deployer_abi)
+    else:
+        try:
+            contract_address = args[0].strip()
+            with open(Path('deployer.json')) as f:
+                    deployer_abi = json.load(f)
+
+            deployer_contract = w3.eth.contract(
+                address=contract_address,
+                abi=deployer_abi)
+        except:
+            return 0, print(args[0].strip())   #print("\n the address provided did not work, which is why the below error occured. Your deployer contract = 0 \n")
+        
     trader_dict = {}
     return deployer_contract, trader_dict
 
@@ -85,7 +97,12 @@ w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
 # Instantiate deployer and trader dictionary
 deployer, trader_dict = load_deployer_contract()
 
-deployer.address
+print(f"This is your deployer address {deployer.address}")
+question = input("Would you like to change it? (y/n)")
+if question.strip() == "y":
+    user_deployer_addr = input("please provide a new deployer address")
+    deployer, trader_dict = load_deployer_contract(user_deployer_addr)
+print("--------------------------")
 
 
 

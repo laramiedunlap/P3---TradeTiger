@@ -15,7 +15,12 @@
 	},
 	{
 		"constant": false,
-		"inputs": [],
+		"inputs": [
+			{
+				"name": "_subCost",
+				"type": "uint256"
+			}
+		],
 		"name": "createLog",
 		"outputs": [
 			{
