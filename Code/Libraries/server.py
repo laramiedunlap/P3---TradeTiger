@@ -65,7 +65,7 @@ def load_deployer_contract(*args):
                 address=contract_address,
                 abi=deployer_abi)
         except:
-            return 0, print(args[0].strip())   #print("\n the address provided did not work, which is why the below error occured. Your deployer contract = 0 \n")
+            return 0, print(f"this address doesn't seem to work: {args[0].strip()}")
         
     trader_dict = {}
     return deployer_contract, trader_dict
