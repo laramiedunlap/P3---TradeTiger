@@ -21,3 +21,15 @@ def load_web3(abi_path):
     )
 
     return contract,contract_address,w3
+
+def load_custom_web3(abi_path,contactAddress):
+
+    with open(Path(abi_path)) as f:
+        logger_abi = json.load(f)
+
+    contract = w3.eth.contract(
+        address=contactAddress,
+        abi=logger_abi
+    )
+
+    return contract,contactAddress,w3
