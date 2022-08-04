@@ -7,7 +7,7 @@ from Libraries.web3_contract import load_web3
 
 load_dotenv()
 
-contract, address, w3 = load_web3(".\Code\Contracts\ABI\Contract_abi.json")
+contract, address, w3 = load_web3("Contracts\ABI\logger.json")
 
 @dataclass
 class interface_block:

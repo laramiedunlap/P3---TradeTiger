@@ -1,0 +1,58 @@
+[
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "deployer_address",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_subCost",
+				"type": "uint256"
+			}
+		],
+		"name": "createLog",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "TraderId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "newLogAddress",
+				"type": "address"
+			}
+		],
+		"name": "logCreated",
+		"type": "event"
+	}
+]
