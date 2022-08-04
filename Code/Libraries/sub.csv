@@ -1,7 +1,3 @@
-subcriber_address,sub_num,email_address,trader_id,,,,,,,
-genesis,-1,genesis,-1,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
+trader_address,subcriber_address,sub_num,email_address,trader_id
+genesis,genesis,-1,genesis,-1
+
