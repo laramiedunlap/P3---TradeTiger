@@ -91,7 +91,7 @@ from Libraries.web3_contract import load_web3
 # threading.stack_size(2**26)
 load_dotenv()
 
-contract, address, w3 = load_web3("../Code/Contracts/ABI/Contract_abi.json")
+contract, address, w3 = load_web3("logger.json")
 
 @dataclass
 class interface_block:
