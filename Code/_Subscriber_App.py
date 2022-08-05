@@ -15,11 +15,13 @@ w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
 
 @dataclass
 class interface_block:
-    inputTraderAddress: str = ""
+    inputTraderLogAddress: str = ""
     inputSubscriberAddress: str = ""
     inputEmail: str = ""
     inputSubCost: int = 0
     subscriptions = []
+    sub_df = pd.DataFrame()
+    subscription_data_df = pd.DataFrame()
 
 @st.cache(allow_output_mutation=True)
 def setup():
@@ -36,41 +38,35 @@ st.title("Subscribe to a Trader")
 
 interface.inputEmail = st.text_input("Enter email")
 interface.inputSubscriberAddress = st.selectbox("Choose Your Wallet Address for Payment", options=accounts)
-interface.inputTraderAddress = st.text_input("Enter a trader's log address")
-if interface.inputTraderAddress != "":
+interface.inputTraderLogAddress = st.text_input("Enter a trader's log address")
+if interface.inputTraderLogAddress != "":
     try: 
-        contract, address, w3 = load_custom_web3('logger.json',interface.inputTraderAddress)
+        contract, address, w3 = load_custom_web3("../Code/Libraries/logger.json",interface.inputTraderLogAddress)
         interface.inputSubCost = contract.functions.viewSubCost().call()
-        if st.button(f"Subscribe for {interface.inputSubCost} wei"):
-        
-            tx_hash = contract.functions.subscribe(
-            ).transact({'from': interface.inputSubscriberAddress, 'gas': 1000000, 'value': interface.inputSubCost})
-            receipt = dict(w3.eth.waitForTransactionReceipt(tx_hash))
-            st.write("Thanks for subscribing!")
-            st.write(receipt)
-            st.balloons()
-            sub_df = pd.read_csv('../Code/Libraries/sub.csv')
-            subscription_data = {
-                "traderAddress": interface.inputTraderAddress,
-                "subscriber_address": interface.inputSubscriberAddress,
-                "email_address": interface.inputEmail
-            }
-            sub_df.append(subscription_data)
-            sub_df.to_csv('../Code/Libraries/sub.csv')
-            interface.subscriptions.append(receipt["inputTraderAddress"])
+        st.write(f"Subscription Fee: {interface.inputSubCost}")
+        traderID_filter = contract.events.newSub.createFilter(fromBlock="latest")
     except:
         st.write("Please try a different trader log address")
 
+if st.button("Subscribe"):
 
-        # # open sub_df.csv, add row, save
-        # # csv takes [trader]
-        # sub_df = pd.read_csv('../Code/Libraries/sub.csv')
-        # subscription_data = {
-        #     "traderAddress": interface.inputTraderAddress,
-        #     "subscriber_address": interface.inputSubscriberAddress,
-        #     "email_address": interface.inputEmail
-        # }
-        # sub_df.append(subscription_data)
-        # sub_df.to_csv('../Code/Libraries/sub.csv')
-        
-        # subscriptions.append(receipt["inputTraderAddress"])
+    tx_hash = contract.functions.subscribe(
+    ).transact({'from': interface.inputSubscriberAddress, 'gas': 1000000, 'value': interface.inputSubCost})
+    receipt = dict(w3.eth.waitForTransactionReceipt(tx_hash))
+    st.write("Thanks for subscribing!")
+    st.write(receipt)
+    st.balloons()
+    interface.subscription_data_df = pd.DataFrame({
+        "trader_log_address": interface.inputTraderLogAddress,
+        "subscriber_address": interface.inputSubscriberAddress,
+        "email_address": interface.inputEmail,
+        "trade_id": traderID_filter.get_new_entries()[0]['args']["TraderId"]
+    }, index=[0])
+    if not(os.path.exists("../Code/Libraries/sub.csv")):
+        interface.sub_df = interface.subscription_data_df.copy()
+    else:
+        interface.sub_df = pd.read_csv('../Code/Libraries/sub.csv', index_col=[0])
+        interface.sub_df = interface.sub_df.append(interface.subscription_data_df)
+    #sub_df.reset_index(inplace=True)
+    interface.sub_df.to_csv('../Code/Libraries/sub.csv')
+    interface.subscriptions.append(interface.inputTraderLogAddress)
