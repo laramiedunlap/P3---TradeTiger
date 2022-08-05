@@ -14,14 +14,15 @@ def list_to_string(inputList):
     return outString
 
 def string_to_list_end_dateTime(inputString):
-    splitList = inputString.split(", ")
-    outList = []
-    for item in splitList:
-        if (item != splitList[len(splitList)-1]):
-            outList.append(float(item))
-        else:
-            outList.append(pd.to_datetime(item))
-    return outList
+    # splitList = inputString.split(", ")
+    # outList = []
+    # for item in splitList:
+    #     if (item != splitList[len(splitList)-1]):
+    #         outList.append(item)
+    #     else:
+    #         outList.append(pd.to_datetime(item))
+    # return outList
+    return inputString.split(", ")
 
 def input_date_string(date):
     """

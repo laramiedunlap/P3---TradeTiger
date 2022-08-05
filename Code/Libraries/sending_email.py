@@ -3,38 +3,42 @@ import os
 from dotenv import load_dotenv
 import pandas as pd
 
+from misc import string_to_list_end_dateTime
+
 load_dotenv()
 
 sub_df = pd.read_csv("sub.csv")
 
 def email_out(message,MailingList):
-    port = 465  # For SSL
-    smtp_server = "smtp.gmail.com"
-    sender_email = "fivetradetiger@gmail.com"
-    password = os.getenv("EMAIL_PASSWORD")
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
-        server.login(sender_email, password)
-        server.sendmail(sender_email,MailingList, message) 
+    if (len(MailingList) != 0):
+        port = 465  # For SSL
+        sender_email = "fivetradetiger@gmail.com"
+        password = os.getenv("EMAIL_PASSWORD")
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+            print(server.login(sender_email, password))
+            server.sendmail(sender_email,MailingList, message) 
 
 def new_trade_email(new_trade_event):
-    MailingList = sub_df[sub_df["TraderId"]== new_trade_event[0]['args']['TraderId']]["subscriber_email"]
+    MailingList = sub_df[sub_df["trade_id"]== new_trade_event[0]['args']['TraderId']]["email_address"]
+    price_time = string_to_list_end_dateTime(new_trade_event[0]['args']['inputEntryPriceEntryTime'])
+    options_data = string_to_list_end_dateTime(new_trade_event[0]['args']['optionsData'])
     message = f"""Subject: Your new open trade
 
-                Your subscribed trader, {new_trade_event[0]['args']['TraderId']}, made the following trade:
-                Open {new_trade_event[0]['args']['inputSize']} share(s) of {new_trade_event[0]['args']['inputSymbol']} at price ${new_trade_event[0]['args']['inputEntryPriceEntryTime']}, stike is {new_trade_event[0]['args']['inputStrike']}, call is
-                {new_trade_event[0]['args']['inputIsCall']}.
-                
+                Your subscribed trader, {new_trade_event[0]['args']['TraderId']}, made the following trade at {price_time[1]} today:
+                Open {new_trade_event[0]['args']['inputSize']} share(s) of {new_trade_event[0]['args']['inputSymbol']} at price ${price_time[0]}
+                Options data as follows:
+                    Strike: {options_data[0]}
+                    Option: {options_data[1]}
+                    Expiration Time Stamp: {options_data[2]}
                 """
     email_out(message,MailingList)
 
 def new_close_trade_email(new_close_trade_event):
-    MailingList = sub_df[sub_df["TraderId"]== new_close_trade_event[0]['args']['TraderId']]["subscriber_email"]
+    MailingList = sub_df[sub_df["trade_id"]== new_close_trade_event[0]['args']['TraderId']]["email_address"]
     message = f"""Subject: Your next close trade
 
-                Your subscribed trader, {new_close_trade_event[0]['args']['TraderId']}, made the following trade:
-                Close {new_close_trade_event[0]['args']['inputSize']} share(s) of {new_close_trade_event[0]['args']['inputSymbol']} at price ${new_close_trade_event[0]['args']['inputExitPriceExitTime']}, stike is {new_close_trade_event[0]['args']['inputStrike']}, call is
-                {new_close_trade_event[0]['args']['inputIsCall']}.
-                
+                Your subscribed trader, {new_close_trade_event[0]['args']['TraderId']}, closed the following trade:
+                Close {new_close_trade_event[0]['args']['tradeNum']} at price ${new_close_trade_event[0]['args']['exitPriceExitTime']}.
                 """
     email_out(message, MailingList)

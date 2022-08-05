@@ -11,7 +11,7 @@ import pandas as pd
 
 load_dotenv()
 
-contract, address, w3 = load_web3('logger.json')
+contract, address, w3 = load_web3(".\Code\logger.json")
 
 @dataclass
 class interface_block:
@@ -75,15 +75,11 @@ else:
                     timeNow = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
           # All Trading Code (Options Data)
           if (interface.trading_platform.platform != trade_platforms["alpaca"]):
-               interface.inputExpirationTimeStamp = st.text_input("Expiration")
-               interface.inputStrike = st.text_input("Strike")
+               interface.inputExpirationTimeStamp = st.text_input("Expiration",value="None")
+               interface.inputStrike = st.text_input("Strike",value="None")
                interface.inputIsCall = st.radio(
-                    "Call or Put",
-                    ('1','0'))
-               if interface.inputIsCall == '1': # TODO This causes a reset of the display
-                    st.write('Call')
-               else:
-                    st.write("Put")
+                    "Option",
+                    ('N/A','Call','Put'))
           if st.button("Open Trade"):
                # openTrade(self,TraderAddress,Open,Symbol,Size,EntryPrice,ExpirationTimeStamp,Strike,IsCall)
                if interface.trading_platform.platform != trade_platforms["manual"]: # Non-manual Entry Code

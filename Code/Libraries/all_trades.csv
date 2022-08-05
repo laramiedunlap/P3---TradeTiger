@@ -1,0 +1,20 @@
+,TraderId,inputTraderAddress,tradeNum,inputOpen,inputSymbol,inputSize,inputEntryPriceEntryTime,inputExitPriceEntryTime,optionsData
+0,9,0xc171F2e5eAB2fF94762Cd863632F8F6196367909,1,True,AAPL,10.0,"165.99, 08/05/2022, 18:02:44",,"NoneN/A, None"
+1,9,0xc171F2e5eAB2fF94762Cd863632F8F6196367909,2,True,AAPL,11.0,"165.99,  at time , 08/05/2022, 18:05:21",,"Strike: , NoneCall: , N/A, Expiration Time Stamp: , None"
+2,9,0xc171F2e5eAB2fF94762Cd863632F8F6196367909,3,True,AAPL,11111.0,"165.99,  at time, 08/05/2022, 18:07:55",,"
+Strike: , None
+Call: , Call, 
+Expiration Time Stamp: , None"
+3,9,0xc171F2e5eAB2fF94762Cd863632F8F6196367909,4,True,AAPL,11111.0,"165.99,  at time, 08/05/2022, 18:12:56",,"
+Strike: , 1, 
+Call: , Put, 
+Expiration Time Stamp: , tomorrow"
+4,9,0xc171F2e5eAB2fF94762Cd863632F8F6196367909,5,True,AAPL,11111.0,"165.99,  at time, 08/05/2022, 18:14:04",,"
+Strike: , 1, 
+Call: , Call, 
+Expiration Time Stamp: , tomorrow"
+5,9,0xc171F2e5eAB2fF94762Cd863632F8F6196367909,10,True,AAPL,2.0,"165.99,  at time, 08/05/2022, 18:27:03",,"
+Strike: , 1, 
+Call: , Call, 
+Expiration Time Stamp: , 08/06/2022, 18:23:08"
+6,9,0xc171F2e5eAB2fF94762Cd863632F8F6196367909,14,True,AAPL,2.0,"165.99, 08/05/2022, 18:34:08",,"IS A, Put, This"

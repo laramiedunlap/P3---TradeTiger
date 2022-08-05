@@ -22,7 +22,7 @@ from io import StringIO
 from dotenv import load_dotenv
 load_dotenv()
 
-
+from sending_email import new_trade_email, new_close_trade_email
 
 class Grader:
     # add event filters to Grader class 
@@ -56,18 +56,18 @@ def load_deployer_contract(*args):
     if not args:
         contract_address = os.getenv("DEPLOYER_ADDRESS") 
         with open(Path('deployer.json')) as f:
-                deployer_abi = json.load(f)
+            deployer_abi = json.load(f)
 
-            deployer_contract = w3.eth.contract(
+        deployer_contract = w3.eth.contract(
             address=contract_address,
             abi=deployer_abi)
     else:
         try:
             contract_address = args[0].strip()
             with open(Path('deployer.json')) as f:
-                    deployer_abi = json.load(f)
+                deployer_abi = json.load(f)
 
-                deployer_contract = w3.eth.contract(
+            deployer_contract = w3.eth.contract(
                 address=contract_address,
                 abi=deployer_abi)
         except:
@@ -108,7 +108,7 @@ def handle_new_trade(event):
 
 def storage_post(list_dfs):
     # Before this Joe, I tried zip then iter, list of tups then take n, df -- this works at least
-    csv_names = ["logger.csv", "sub.csv", "all_trades.csv"]
+    csv_names = ["logger.csv", "all_trades.csv"]
     for df , fname in zip(list_dfs,csv_names):
         df.to_csv(Path(fname))
 
@@ -124,7 +124,7 @@ def load_database():
         if no_storage.strip() == "y":
 
             logger_df = pd.DataFrame(columns=(['TraderId','newLogAddress']))
-            sub_df = pd.DataFrame(columns=(['TraderId', 'subNum', 'subAddr']))
+            # sub_df = pd.DataFrame(columns=(['TraderId', 'subNum', 'subAddr']))
             all_trades_df = pd.DataFrame(columns=(['TraderId',
                                                     'inputTraderAddress',
                                                     'tradeNum',
@@ -140,13 +140,13 @@ def load_database():
     
     else:
         logger_df = drop_unnamed(pd.read_csv("logger.csv"))
-        sub_df = drop_unnamed(pd.read_csv("sub.csv"))
+        # sub_df = drop_unnamed(pd.read_csv("sub.csv"))
         all_trades_df = drop_unnamed(pd.read_csv("all_trades.csv"))
         
-    return logger_df , sub_df , all_trades_df
+    return logger_df , all_trades_df
 
 
-logger_df , sub_df , all_trades_df = load_database()
+logger_df , all_trades_df = load_database()
 
 w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
 
@@ -198,23 +198,28 @@ try:
                 print("--------------------------")
                 print(new_sub_event)
                 print("--------------------------")
-                sub_df = sub_df.append(new_sub_event[0]['args'], ignore_index=True)
+                # sub_df = sub_df.append(new_sub_event[0]['args'], ignore_index=True)
+                storage_post([(logger_df), (all_trades_df)])
             if new_trade_event:
                 print("--------------------------")
                 print((new_trade_event))
+                new_trade_email(new_trade_event)
                 print("--------------------------")
                 all_trades_df = all_trades_df.append(new_trade_event[0]['args'], ignore_index=True)
+                storage_post([(logger_df), (all_trades_df)])
                 
             if new_close_trade_event:
                 new_close_trade_event[0]["TraderId"] = key 
                 print("--------------------------")
                 print((new_close_trade_event))
+                new_close_trade_email(new_close_trade_event)
                 print("--------------------------")
+                storage_post([(logger_df), (all_trades_df)])
         
         time.sleep(3)
         
 except KeyboardInterrupt:
     print("Creating storage backups...\n")
-    storage_post([(logger_df), (sub_df), (all_trades_df)])
+    storage_post([(logger_df), (all_trades_df)])
     print("Done.")
     
