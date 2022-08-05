@@ -22,6 +22,9 @@ from io import StringIO
 from dotenv import load_dotenv
 load_dotenv()
 
+from itertools import zip
+import atexit
+
 class Grader:
     # add event filters to Grader class 
     def __init__(self, trader_id, log_address):

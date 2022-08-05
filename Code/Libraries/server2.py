@@ -58,7 +58,7 @@ def load_deployer_contract(*args):
         with open(Path('deployer.json')) as f:
                 deployer_abi = json.load(f)
 
-        deployer_contract = w3.eth.contract(
+            deployer_contract = w3.eth.contract(
             address=contract_address,
             abi=deployer_abi)
     else:
@@ -67,7 +67,7 @@ def load_deployer_contract(*args):
             with open(Path('deployer.json')) as f:
                     deployer_abi = json.load(f)
 
-            deployer_contract = w3.eth.contract(
+                deployer_contract = w3.eth.contract(
                 address=contract_address,
                 abi=deployer_abi)
         except:
@@ -102,7 +102,6 @@ def handle_new_log(event):
     io = StringIO((Web3.toJSON(event)))
     return json.load(io)
     
-
 def handle_new_trade(event):
     io = StringIO((Web3.toJSON(event)))
     return json.load(io)
@@ -205,6 +204,7 @@ try:
                 print((new_trade_event))
                 print("--------------------------")
                 all_trades_df = all_trades_df.append(new_trade_event[0]['args'], ignore_index=True)
+                
             if new_close_trade_event:
                 new_close_trade_event[0]["TraderId"] = key 
                 print("--------------------------")
