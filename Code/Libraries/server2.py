@@ -119,7 +119,7 @@ def load_database():
     print("--------------------------")
     # Check for existing data -- if it doesn't exist, then create new dataframes
     if not(os.path.exists("logger.csv")):
-        no_storage = input("no csv storage found, would you like to start from scratch? (y/n)")
+        no_storage = input("no csv storage found, would you like to start from scratch? (y/n) ")
         print("--------------------------\n")
         if no_storage.strip() == "y":
 
@@ -158,7 +158,7 @@ if len(logger_df.values) > 0:
     trader_dict = load_trader_dict(logger_df)
 
 print(f"This is your deployer address {deployer.address}")
-question = input("Would you like to change it? (y/n)")
+question = input("Would you like to change it? (y/n) ")
 if question.strip() == "y":
     user_deployer_addr = input("please provide a new deployer address")
     deployer, trader_dict = load_deployer_contract(user_deployer_addr)
