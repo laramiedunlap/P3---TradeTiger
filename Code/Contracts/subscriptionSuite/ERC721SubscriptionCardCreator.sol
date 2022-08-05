@@ -23,7 +23,7 @@ contract TraderSubscriptionCardRegistry is ERC721, ERC721Enumerable, ERC721Pausa
     constructor() public ERC721("SubscriptionCards", "CARDS") {}
 
     struct SubscriptionCard {
-        string cardSeries;
+        string name;
         address TraderContractAddress;
         uint256 cardValue;
         string cardJson;
@@ -32,33 +32,33 @@ contract TraderSubscriptionCardRegistry is ERC721, ERC721Enumerable, ERC721Pausa
     mapping(uint => SubscriptionCard) public subscriptionRegistry;
     
     function imageUri(
-        uint256 subscriptionAccessHash) public view returns (string memory imageJson){
-        return subscriptionRegistry[subscriptionAccessHash].cardJson;
+        uint256 tokenId) public view returns (string memory imageJson){
+        return subscriptionRegistry[tokenId].cardJson;
     }
 
     function registerSubscriptionCard(
-        address subscriber,
-        string memory cardSeries,
+        address owner,
+        string memory name,
         address TraderContractAddress,
         uint256 purchasePriceUSD,
-        string memory cardURI,
+        string memory tokenURI,
         string memory cardJSON
     ) public returns (uint256) {
         if  //  Registration Hash in newRegistrationHashTable
             //  matches RegistrationHash in off-chain Account Data,
-            //  then mint the subscriptionAccessHash (variant on tokenId)
+            //  then mint the tokenId
             //  and map to the new subscriber.
         uint256 subscriptionAccessHash = totalSupply();
 
-        _mint(subscriber, subscriptionAccessHash);
-        _setTokenURI(subscriptionAccessHash, cardURI);
+        _mint(owner, tokenId);
+        _setTokenURI(tokenId, tokenURI);
 
-        subscriptionRegistry[subscriptionAccessHash] = SubscriptionCard(
-            cardSeries, 
+        subscriptionRegistry[tokenId] = SubscriptionCard(
+            name, 
             TraderContractAddress, 
             cardValue, 
             cardJSON);
 
-        return subscriptionAccessHash;
+        return tokenId;
     }
 }

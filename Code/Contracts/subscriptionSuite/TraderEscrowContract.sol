@@ -6,8 +6,20 @@ pragma solidity 0.8.0;
 // It will contain a deployer that deploys a new contract for each new
 // Trader License.
 
-contract logger {
+contract TraderEscrow {
     address payable trader;
     address payable server;
-    uint256 TraderId;
+    uint256 TraderLicenseId;
     uint tradeNum;
+
+contract paymentSplitter {
+    address payable [] public recipients;
+
+    constructor(address payable [] memory _addrs) {
+        for (uint i=0; i<_addrs.length; i++){
+            recipients.push(_addrs[i]);
+        }
+    }
+
+    receive() payable external {}
+}

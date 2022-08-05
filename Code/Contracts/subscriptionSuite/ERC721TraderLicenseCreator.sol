@@ -16,38 +16,68 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 // The Trader License can be revoked for violations of policy, and the Trader would
 // be locked out of access to the Trader Escrow Contract.
 
+// The Trader License NFT will also contain the trade information and update the log file
+// with an event
+
 contract TraderSubscriptionCardRegistry is ERC721, ERC721Enumerable, ERC721Pausable {
     constructor() public ERC721("TraderLicense", "TLIC") {}
 
     struct TraderLicense {
-        string TraderName;
+        string name;
         string TraderCredentials;
         address TraderContractAddress;
-        string cardJson;
+        uint tradeId;
+        bool open;
+        string symbol;
+        string shares;
+        string entryPrice;
+        string entryTime;
+        string exitPrice;
+        string exitPrice;
+        bool isCall;
+        string expirationTimeStamp;
+        string strikePrice;
+        string licenseJson;
     }
 
     mapping(uint => TraderLicense) public licenseRegistry;
+
+    event Trade(
+        uint256 tokenId, 
+        uint tradeId,
+        bool open,
+        string symbol,
+        string shares,
+        string entryPrice,
+        string entryTime,
+        string exitPrice,
+        string exitPrice,
+        bool isCall,
+        string expirationTimeStamp,
+        string strikePrice,
+        string reportURI, 
+        string licenseJson)
     
     function imageUri(
-        uint256 traderAccessHash) public view returns (string memory imageJson){
-        return subscriptionRegistry[traderAccessHash].cardJson;
+        uint256 tokenId) public view returns (string memory imageJson){
+        return subscriptionRegistry[tokenId].cardJson;
     }
 
     function registerTraderLicense(
         address Trader,
-        string memory cardSeries,
+        string memory name,
         address TraderContractAddress,
-        string memory cardURI,
+        string memory tokenURI,
         string memory cardJSON
     ) public returns (uint256) {
         if  //  Registration Hash in newRegistrationHashTable
             //  matches RegistrationHash in off-chain Account Data,
             //  then mint the subscriptionAccessHash (variant on tokenId)
             //  and map to the new subscriber.
-        uint256 traderAccessHash = totalSupply();
+        uint256 tokenId = totalSupply();
 
         _mint(Trader, traderLicenseId);
-        _setTokenURI(traderLicenseId, cardURI);
+        _setTokenURI(traderLicenseId, tokenURI);
 
         subscriptionRegistry[traderLicenseId] = TraderLicense(
             TraderName, 
@@ -56,5 +86,25 @@ contract TraderSubscriptionCardRegistry is ERC721, ERC721Enumerable, ERC721Pausa
             cardJSON);
 
         return traderLicenseId;
+    }
+
+        function logTrade(
+        bool open;
+        string symbol;
+        string shares;
+        string entryPrice;
+        string entryTime;
+        string exitPrice;
+        string exitPrice;
+        bool isCall;
+        string expirationTimeStamp;
+        string strikePrice;
+        
+        ) public returns (uint256) {
+            artCollection[tokenId].appraisalValue = newAppraisalValue;
+
+            emit Appraisal(tokenId, newAppraisalValue, reportURI, tokenJSON);
+
+            return (artCollection[tokenId].appraisalValue);
     }
 }

@@ -22,6 +22,11 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 contract TTToken is ERC20 {
     constructor() ERC20("TTToken", "TTT") {}
 
+    modifier onlyServer {
+        require(msg.sender == server, "You are not the server");
+        _;
+    }
+
 //  Add function to collect verified subscription payment information from the 
 //  Account Manager Oracle and mint tokens in a 1:1 USD to token ratio, and
 //  then transfer (first) to subscriber, and (second) automatically re-route
