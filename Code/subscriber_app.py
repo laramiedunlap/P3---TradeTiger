@@ -39,13 +39,13 @@ interface.inputSubscriberAddress = st.selectbox("Choose Your Wallet Address for 
 interface.inputTraderLogAddress = st.text_input("Enter a trader's log address")
 if interface.inputTraderLogAddress != "":
     try: 
-        contract, address, w3 = load_custom_web3("../Code/Contracts/ABI/sample_logger_contract_abi.json",interface.inputTraderLogAddress)
+        contract, address, w3 = load_custom_web3("../Code/Libraries/sub_logger.json",interface.inputTraderLogAddress)
         interface.inputSubCost = contract.functions.viewSubCost().call()
         st.write(f"Subscription Fee: {interface.inputSubCost}")
     except:
         st.write("Please try a different trader log address")
 
-if st.button(f"Subscribe"):
+if st.button("Subscribe"):
 
     tx_hash = contract.functions.subscribe(
     ).transact({'from': interface.inputSubscriberAddress, 'gas': 1000000, 'value': interface.inputSubCost})
@@ -55,9 +55,10 @@ if st.button(f"Subscribe"):
     st.balloons()
     sub_df = pd.read_csv('../Code/Libraries/sub.csv', index_col=[0])
     subscription_data_df = pd.DataFrame({
-        "trader_address": interface.inputTraderLogAddress,
+        "trader_log_address": interface.inputTraderLogAddress,
         "subscriber_address": interface.inputSubscriberAddress,
-        "email_address": interface.inputEmail
+        "email_address": interface.inputEmail,
+        "trade_id": ""
     }, index=[0])
     sub_df = sub_df.append(subscription_data_df)
     #sub_df.reset_index(inplace=True)

@@ -1,0 +1,305 @@
+[
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "checkTrader",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "inputTraderAddress",
+				"type": "address"
+			},
+			{
+				"name": "inputOpen",
+				"type": "bool"
+			},
+			{
+				"name": "inputSymbol",
+				"type": "string"
+			},
+			{
+				"name": "inputSize",
+				"type": "string"
+			},
+			{
+				"name": "inputEntryPriceEntryTime",
+				"type": "string"
+			},
+			{
+				"name": "inputOptionsData",
+				"type": "string"
+			}
+		],
+		"name": "openTrade",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "receiverAddr",
+				"type": "address"
+			},
+			{
+				"name": "amountWei",
+				"type": "uint256"
+			}
+		],
+		"name": "payout",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "tradeNum",
+				"type": "uint256"
+			},
+			{
+				"name": "Verification",
+				"type": "bool"
+			}
+		],
+		"name": "setVerification",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "checkServer",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "subscribe",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "viewSubCost",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "tradeNum",
+				"type": "uint256"
+			},
+			{
+				"name": "inputExitPriceExitTime",
+				"type": "string"
+			}
+		],
+		"name": "closeTrade",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "log",
+		"outputs": [
+			{
+				"name": "TraderId",
+				"type": "uint256"
+			},
+			{
+				"name": "traderAddress",
+				"type": "address"
+			},
+			{
+				"name": "tradeNum",
+				"type": "uint256"
+			},
+			{
+				"name": "open",
+				"type": "bool"
+			},
+			{
+				"name": "symbol",
+				"type": "string"
+			},
+			{
+				"name": "size",
+				"type": "string"
+			},
+			{
+				"name": "entryPriceEntryTime",
+				"type": "string"
+			},
+			{
+				"name": "exitPriceExitTime",
+				"type": "string"
+			},
+			{
+				"name": "optionsData",
+				"type": "string"
+			},
+			{
+				"name": "Verified",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"name": "newTrader",
+				"type": "address"
+			},
+			{
+				"name": "_server",
+				"type": "address"
+			},
+			{
+				"name": "_TraderId",
+				"type": "uint256"
+			},
+			{
+				"name": "_subCost",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "TraderId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "subNum",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "subAddr",
+				"type": "address"
+			}
+		],
+		"name": "newSub",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "TraderId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "inputTraderAddress",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "tradeNum",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "inputOpen",
+				"type": "bool"
+			},
+			{
+				"indexed": false,
+				"name": "inputSymbol",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "inputSize",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "inputEntryPriceEntryTime",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "optionsData",
+				"type": "string"
+			}
+		],
+		"name": "newTrade",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "tradeNum",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "exitPriceExitTime",
+				"type": "string"
+			}
+		],
+		"name": "newCloseTrade",
+		"type": "event"
+	}
+]
