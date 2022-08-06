@@ -28,6 +28,11 @@ fig = plot_chart(symbol,period,interval)
 
 st.plotly_chart(fig, use_container_width=False)
 
+
+
+
+###### OPTIONS STUFF BELOW $$$$$4$$
+
 import yfinance as yf
 import datetime as dt
 def options_chain(symbol):
@@ -79,8 +84,9 @@ def set_current_opt_price(expry,strike,opt_type):
     else: 
         _slice = _slice[_slice['CALL']==False]
     
-    current_price = round(float(_slice[_slice['strike']==strike]['mark']),2)
+    _slice = _slice[_slice['strike']==strike]['mark'] #round(float(_slice[_slice['strike']==strike]['mark']),2)
     
-    return current_price
+    return float(_slice.values)
 
+st.write(set_current_opt_price(expry,strike,opt_type))
 # st.write(f"price = {set_current_opt_price(expry,strike,opt_type)}")
