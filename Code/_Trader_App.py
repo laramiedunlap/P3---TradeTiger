@@ -11,7 +11,7 @@ import pandas as pd
 
 load_dotenv()
 
-contract, address, w3 = load_web3(".\Code\logger.json")
+contract, address, w3 = load_web3("logger.json")
 
 @dataclass
 class interface_block:
