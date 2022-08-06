@@ -3,14 +3,17 @@ import time
 from datetime import datetime
 def list_to_string(inputList):
     outString = ""
+    count = 0
+    limit = len(inputList)-1
     for item in inputList:
         if type(item) == datetime:
             outString += item.strftime("%m/%d/%Y, %H:%M:%S")
         else:
             outString += str(item)
         outString
-        if (item != inputList[len(inputList)-1]):
+        if (count < limit):
             outString += ", "
+        count+=1
     return outString
 
 def string_to_list_end_dateTime(inputString):

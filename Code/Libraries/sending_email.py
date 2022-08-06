@@ -7,8 +7,6 @@ from misc import string_to_list_end_dateTime
 
 load_dotenv()
 
-sub_df = pd.read_csv("sub.csv")
-
 def email_out(message,MailingList):
     if (len(MailingList) != 0):
         port = 465  # For SSL
@@ -16,10 +14,12 @@ def email_out(message,MailingList):
         password = os.getenv("EMAIL_PASSWORD")
         context = ssl.create_default_context()
         with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
-            print(server.login(sender_email, password))
-            server.sendmail(sender_email,MailingList, message) 
+            server.login(sender_email, password)
+            server.sendmail(sender_email,MailingList, message)
+            print("Email(s) sent!")
 
 def new_trade_email(new_trade_event):
+    sub_df = pd.read_csv("sub.csv")
     MailingList = sub_df[sub_df["trade_id"]== new_trade_event[0]['args']['TraderId']]["email_address"]
     price_time = string_to_list_end_dateTime(new_trade_event[0]['args']['inputEntryPriceEntryTime'])
     options_data = string_to_list_end_dateTime(new_trade_event[0]['args']['optionsData'])
@@ -35,6 +35,7 @@ def new_trade_email(new_trade_event):
     email_out(message,MailingList)
 
 def new_close_trade_email(new_close_trade_event):
+    sub_df = pd.read_csv("sub.csv")
     MailingList = sub_df[sub_df["trade_id"]== new_close_trade_event[0]['args']['TraderId']]["email_address"]
     message = f"""Subject: Your next close trade
 
