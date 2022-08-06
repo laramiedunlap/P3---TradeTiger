@@ -1,3 +1,2 @@
 ,TraderId,inputTraderAddress,tradeNum,inputOpen,inputSymbol,inputSize,inputEntryPriceEntryTime,inputExitPriceEntryTime,optionsData
-0,1,0xD525836B283c731E70B5bDF18F35C37a7c7c4e18,0,True,AAPL,10.0,"165.99, 08/05/2022, 22:34:04",,"None, N/A, None"
-1,1,0xD525836B283c731E70B5bDF18F35C37a7c7c4e18,3,True,AAPL,10.0,"165.99, 08/05/2022, 22:38:32",,"None, N/A, None"
+0,1,0x8084b15D035C480EFA6B6e9664b100c2903D6e9a,0,True,AAPL,10.0,"0, 08/06/2022, 08:19:01",,"None, N/A, None"
